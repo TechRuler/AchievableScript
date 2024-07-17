@@ -5,4 +5,5 @@ For creating this i used tkinter
 
 # this is the look of my editor
 
-![code editor](https://github.com/user-attachments/assets/307094c0-4422-4e8f-b633-2973c93fefef)
+
+![code editor](https://github.com/user-attachments/assets/c0440653-d3dd-4479-a2c5-a45645940df4)
