@@ -153,13 +153,12 @@ class App(Window):
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14),toggle_color=self.currentline)
-        # self.editor.configurations(widget=self.editor.editor,method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.variable,decorator=self.decorator,self_color=self.self_color)
+        
         self.editor.setCurrentLinecolor(self.currentline)
-        # self.editor.defaultpythonsyntax(widget=self.editor.editor,keyword=self.keyword,builtin=self.builtin,string=self.string,comment=self.comment,definition=self.definition)
-        # self.editor.highlight_syntax(widget=self.editor.editor)
+        
 
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
-        # self.editor.pack(side="right",fill=BOTH,expand=True)
+        
 
         self.tab.add_tab(frame=self.editor,text="Untitled")
 
@@ -187,16 +186,7 @@ class App(Window):
         self.output.output_line.changefont(("Consolas",15))
         
         
-        # self.output = Text(self.output_container,font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground,wrap="word")
-        # self.output.grid(row=0,column=1,sticky="nsew")
-        # self.vertical_scroll = AutoScrollbar(self.output_container,orient=tk.VERTICAL, command=self.output.yview)
-        # self.vertical_scroll.grid(row=0, column=2, sticky='ns',rowspan=2)
-        # self.output.configure(yscrollcommand=self.vertical_scroll.set)
-        # self.output_line = LineNumber(self.output_container,width=55,bg=self.app_background)
-        # self.output_line.grid(row=0,column=0,sticky="ns")
-        # self.output_line.attach(self.output)
-        # self.output_line.changefg(self.foreground)
-        # self.output_line.changefont(("Consolas",15))
+        
         
 
         self.output_container.rowconfigure(0,weight=1)
