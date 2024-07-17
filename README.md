@@ -6,3 +6,8 @@ this is python eidtor which can run python code with it's built-in terminal, edi
 
 
 ![code editor](https://github.com/user-attachments/assets/c0440653-d3dd-4479-a2c5-a45645940df4)
+
+
+### Third-Party Libraries
+
+This project uses Pillow for image processing. Pillow is an open-source library that is used under its respective license.
