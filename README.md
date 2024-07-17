@@ -1,14 +1,30 @@
-# My-Editor
-this is python eidtor which can run python code with it's built-in terminal, editor code with editor, there is also side bar for managing file and folder you can operate file related operation also like renaming files and folders, removing and creating 
+#My-Editor
+My-Editor is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
+
+#Preview
+![code editor](https://github.com/user-attachments/assets/4baf0b35-cc1f-4238-a18d-cf6e565b2791)
 
 
-# this is the look of my editor
+#Features
+Integrated Python Terminal: Run and test Python code directly within the editor.
+Code Editing: Edit code with syntax highlighting and other editing features.
+Sidebar for File Management: Manage files and folders with a built-in sidebar.
+File Operations: Perform operations such as renaming, removing, and creating files and directories.
+Installation
+To use My-Editor, clone the repository and follow these steps:
 
+Install dependencies:
 
-![code editor](https://github.com/user-attachments/assets/c0440653-d3dd-4479-a2c5-a45645940df4)
+bash
+Copy code
+pip install -r requirements.txt
+Run the editor:
 
+bash
+Copy code
+python main.py
+#Contributing
+Contributions are welcome! If you want to contribute to My-Editor, fork the repository and submit a pull request.
 
-### Third-Party Libraries
-
-This project utilizes Pillow for image processing, an open-source library.
-
+Third-Party Libraries
+This project utilizes third-party libraries for enhanced functionality.
