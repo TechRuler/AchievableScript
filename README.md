@@ -16,5 +16,5 @@ File Operations: Perform operations such as renaming, removing, and creating fil
 # Contributing
 Contributions are welcome! If you want to contribute to My-Editor, fork the repository and submit a pull request.
 
-#Third-Party Libraries
+# Third-Party Libraries
 This project utilizes third-party libraries for enhanced functionality.
