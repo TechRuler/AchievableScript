@@ -10,4 +10,5 @@ this is python eidtor which can run python code with it's built-in terminal, edi
 
 ### Third-Party Libraries
 
-This project uses Pillow for image processing. Pillow is an open-source library that is used under its respective license.
+This project utilizes Pillow for image processing, an open-source library.
+
