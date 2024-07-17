@@ -64,6 +64,11 @@ class PythonShell(tk.Frame):
         self.output.bind("<Button-1>",lambda event=None:self.refresh_line_number())
         self.output.bind("<MouseWheel>",lambda event=None:self.refresh_line_number())
         self.output.bind("<Key>",lambda event=None:self.refresh_line_number())
+        self.output.bind("<Return>",lambda event=None:self.on_enter_key_click())
+    def on_enter_key_click(self):
+        self.refresh_line_number()
+        command = self.output.get("insert linestart", "insert lineend").strip()
+        self.run_command(command)
     def refresh_line_number(self):
         self.after(2,self.output_line.redraw)
     def change(self,file):
@@ -73,29 +78,30 @@ class PythonShell(tk.Frame):
         if self.file:
             if self.file.endswith(".py"):
                 command = f'python "{self.file}"'
-                try:
-                    self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True, bufsize=1, universal_newlines=True)
-                    self.prompt = ""  # Reset the prompt for each new run
-                    if self.output.index("insert") != self.output.index("insert linestart"):
-                        self.output.insert("end", f"\nRunning {self.file}...\n", "info")
-                    else:
-                        self.output.insert("end", f"Running {self.file}...\n", "info")
-                    self.output.see("end")
-
-                    # Start threads to read stdout and stderr
-                    threading.Thread(target=self.read_output).start()
-                    threading.Thread(target=self.read_error).start()
-
-                    # Bind Enter key to send input to the process
-                    self.output.bind("<Return>", self.send_input)
-                except Exception as e:
-                    self.output.insert("end", f"An error occurred: {e}\n", "error")
-                    self.output.see("end")
+                self.run_command(command)
             else:
                 self.output.insert("end", "No file selected to run.\n", "error")
                 self.output.see("end")
             self.refresh_line_number()
         return "break"
+    def run_command(self, command):
+        try:
+            self.process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True, bufsize=1, universal_newlines=True)
+            if self.output.index("insert") != self.output.index("insert linestart"):
+                self.output.insert("end", f"\nRunning {self.file}...\n", "info")
+            else:
+                self.output.insert("end", f"Running {self.file}...\n", "info")
+            self.output.see("end")
+
+                    # Start threads to read stdout and stderr
+            threading.Thread(target=self.read_output).start()
+            threading.Thread(target=self.read_error).start()
+
+                    # Bind Enter key to send input to the process
+            self.output.bind("<Return>", self.send_input)
+        except Exception as e:
+            self.output.insert("end", f"An error occurred: {e}\n", "error")
+            self.output.see("end")
         
     def read_output(self):
         while True:
