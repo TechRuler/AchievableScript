@@ -239,7 +239,7 @@ class Window(tk.Tk):
         self.hasstyle = False
     def resize_button_function(self):
         if not self.size:
-            self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()-40}+0+0")
+            self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()-50}+0+0")
             self.title_resize_button.config(text=" \u2752 ")
             self.size = True
         else:
