@@ -30,11 +30,12 @@ class SyntaxHighlighter:
         self.master.tag_configure('circle',foreground=circle_brackets)
         self.master.tag_configure('square',foreground=square_brackets)
         self.master.tag_configure('curlly',foreground=curlly_brackets)
+        self.master.tag_configure("variable", foreground=variable_in_parameter)
         self.master.tag_configure('comment', foreground=comment)
         self.master.tag_configure('string', foreground=string)
         self.master.tag_configure('user_def', foreground=definition)  # New tag for user-defined elements
         self.master.tag_configure('class', foreground=class_definition)
-        self.master.tag_configure("variable", foreground="cyan")
+        
         
 
          # self.text_widget.tag_configure('module', foreground='brown')
@@ -81,6 +82,8 @@ class SyntaxHighlighter:
         # Highlight imported module aliases throughout the file
         self.highlight_imported_modules(content)
 
+        # Highlight variables inside parentheses
+        self.highlight_variables(content)
         
 
     def clear_tags(self):
@@ -233,6 +236,23 @@ class SyntaxHighlighter:
         line_no = len(lines)
         char_pos = len(lines[-1]) if lines else 0
         return f"{line_no}.{char_pos}"
+    def highlight_variables(self, content):
+        # Regex pattern to match variable names inside parentheses
+        pattern = r'\(([^)]+)\)'
+        
+        lines = content.splitlines()
+        for line_no, line in enumerate(lines, start=1):
+            for match in re.finditer(pattern, line):
+                content = match.group(1)
+                start_index = match.start(1) + 1
+                end_index = match.end(1) - 1
+                
+                var_pattern = r'([^=,\s]\w+)(?=\s*=\s*)'
+                for var_match in re.finditer(var_pattern, content):
+                    var_name = var_match.group(1)
+                    var_start = start_index + var_match.start(1) - 1
+                    var_end = start_index + var_match.end(1) - 1
+                    self.apply_tag(f"{line_no}.{var_start}", f"{line_no}.{var_end}", 'variable')
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -244,6 +264,5 @@ if __name__ == "__main__":
     app = SyntaxHighlighter(master=text_widget)
     app.configures()
 
-   
     
     root.mainloop()
