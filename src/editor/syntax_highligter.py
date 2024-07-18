@@ -158,7 +158,23 @@ class SyntaxHighlighter:
                 start, end = mo.span(kind)
                 self.apply_tag(f"{line_no + 1}.{start}", f"{line_no + 1}.{end}", kind)
     
+    def highlight_variables(self, content):
+        # Regex pattern to match variable names inside parentheses
+        pattern = r'\((.*)\)'
         
+        lines = content.splitlines()
+        for line_no, line in enumerate(lines, start=1):
+            for match in re.finditer(pattern, line):
+                content = match.group(1)
+                start_index = match.start(1) + 1
+                end_index = match.end(1) - 1
+                
+                var_pattern = r'([^=,\s]\w*)(?=\s*=\s*)'
+                for var_match in re.finditer(var_pattern, content):
+                    var_name = var_match.group(1)
+                    var_start = start_index + var_match.start(1) - 1
+                    var_end = start_index + var_match.end(1) - 1
+                    self.apply_tag(f"{line_no}.{var_start}", f"{line_no}.{var_end}", 'variable')
     def tokenize_definitions(self, content):
         def_pattern = re.compile(r'^\s*(def)\s+([a-zA-Z_]\w*)', re.MULTILINE)
         class_pattern = re.compile(r'^\s*(class)\s+([a-zA-Z_]\w*)', re.MULTILINE)
@@ -236,23 +252,7 @@ class SyntaxHighlighter:
         line_no = len(lines)
         char_pos = len(lines[-1]) if lines else 0
         return f"{line_no}.{char_pos}"
-    def highlight_variables(self, content):
-        # Regex pattern to match variable names inside parentheses
-        pattern = r'\(([^)]+)\)'
-        
-        lines = content.splitlines()
-        for line_no, line in enumerate(lines, start=1):
-            for match in re.finditer(pattern, line):
-                content = match.group(1)
-                start_index = match.start(1) + 1
-                end_index = match.end(1) - 1
-                
-                var_pattern = r'([^=,\s]\w+)(?=\s*=\s*)'
-                for var_match in re.finditer(var_pattern, content):
-                    var_name = var_match.group(1)
-                    var_start = start_index + var_match.start(1) - 1
-                    var_end = start_index + var_match.end(1) - 1
-                    self.apply_tag(f"{line_no}.{var_start}", f"{line_no}.{var_end}", 'variable')
+    
 
 if __name__ == "__main__":
     root = tk.Tk()
