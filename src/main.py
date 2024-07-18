@@ -149,7 +149,7 @@ class App(Window):
         self.editor = Editor(self.tab)
         self.editor.editor.configure(font=(self.font,self.font_size),bg=self.background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground,undo=True)
         self.editor.line.configure(bg=self.background,border=0)
-        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background)
+        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14),toggle_color=self.currentline)
@@ -411,7 +411,7 @@ class App(Window):
         self.editor.line.configure(bg=self.background,border=0)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
-        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background)
+        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
         self.file = file
 
