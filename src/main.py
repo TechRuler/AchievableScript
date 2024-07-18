@@ -178,6 +178,9 @@ class App(Window):
 
         self.output = PythonShell(self.output_container)
         self.output.pack(side="top",fill="both")
+
+        self.output_terminate = Button(self.output_frame_inner,text="Terminate",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,command=self.output.cancel_command)
+        self.output_terminate.pack(side="right",fill="y")
         
         self.output.output.configure(font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground)
         self.output.output_line.config(bg=self.app_background)
