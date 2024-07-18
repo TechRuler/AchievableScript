@@ -54,6 +54,7 @@ class Editor(tk.Frame):
         self.editor.bind("<}>",lambda event=None:self.autocomplete_brackets(bracket="}"))
         self.editor.bind("<'>",lambda event=None:self.autocomplete_strings(symbol="'"))
         self.editor.bind('<">',lambda event=None:self.autocomplete_strings(symbol='"'))
+        self.editor.bind("<Tab>",lambda event=None:self.on_tab_click())
         self.editor.bind("<Control-m>",lambda event=None:self.do_comment())
         
         self.auto_complete.pop_up.add_command_for_element = self.add_by_click
@@ -198,6 +199,10 @@ class Editor(tk.Frame):
         elif symbol == "'" and self.editor.get("insert",index1) == "'":
             self.editor.delete("insert",index1)
         self.CurrentLineHighlight(widget=self.editor,delay=10)
+    def on_tab_click(self):
+        self.editor.insert("insert"," "*4)
+        self.CurrentLineHighlight(widget=self.editor,delay=10)
+        return "break"
         
     def CurrentLineHighlight(self,widget,delay):
         def highlight():
