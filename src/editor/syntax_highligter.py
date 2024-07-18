@@ -81,7 +81,7 @@ class SyntaxHighlighter:
         # Highlight imported module aliases throughout the file
         self.highlight_imported_modules(content)
 
-        self.tokenize_variables(content)
+        
 
     def clear_tags(self):
         tags = ['keyword', 'constant',"variable", 'self','circle','square','curlly','oparators' ,'special', 'builtin', 'method', 'number', 'comment', 'string', 'module', 'user_module', 'user_def', 'class']
