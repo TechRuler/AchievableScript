@@ -244,10 +244,6 @@ if __name__ == "__main__":
     app = SyntaxHighlighter(master=text_widget)
     app.configures()
 
-    # Example of toggling the auto-coloring on and off
-    # def toggle_coloring(event):
-    #     app.master.event_generate('<<toggle-auto-coloring>>')
-
-    # app.master.bind('<Control-c>', toggle_coloring)
+   
     
     root.mainloop()
