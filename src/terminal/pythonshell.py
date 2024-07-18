@@ -61,10 +61,13 @@ class PythonShell(tk.Frame):
 
         self.rowconfigure(0,weight=1)
         self.columnconfigure(1,weight=1)
+
+        self.file = ""
         self.output.bind("<Button-1>",lambda event=None:self.refresh_line_number())
         self.output.bind("<MouseWheel>",lambda event=None:self.refresh_line_number())
         self.output.bind("<Key>",lambda event=None:self.refresh_line_number())
         self.output.bind("<Return>",lambda event=None:self.on_enter_key_click())
+    
     def on_enter_key_click(self):
         self.refresh_line_number()
         command = self.output.get("insert linestart", "insert lineend").strip()
@@ -94,6 +97,7 @@ class PythonShell(tk.Frame):
             self.output.see("end")
 
                     # Start threads to read stdout and stderr
+            self.stop_threads = threading.Event()
             threading.Thread(target=self.read_output).start()
             threading.Thread(target=self.read_error).start()
 
@@ -104,7 +108,9 @@ class PythonShell(tk.Frame):
             self.output.see("end")
         
     def read_output(self):
-        while True:
+        while not self.stop_threads.is_set():
+            if self.process is None:
+                break
             output_char = self.process.stdout.read(1)
             if output_char:
                 self.output.insert("end", output_char, "output")
@@ -119,7 +125,9 @@ class PythonShell(tk.Frame):
         self.refresh_line_number()
 
     def read_error(self):
-        while True:
+        while not self.stop_threads.is_set():
+            if self.process is None:
+                break
             error_line = self.process.stderr.readline()
             if error_line:
                 self.output.insert("end", error_line, "error")
@@ -148,3 +156,13 @@ class PythonShell(tk.Frame):
         self.refresh_line_number()
 
         return "break"
+    def cancel_command(self):
+        if self.process:
+            self.stop_threads.set()
+            self.process.terminate()
+            self.process.wait()  # Ensure the process has terminated
+            self.output.insert("end", "Process terminated.\n", "error")
+            self.output.see("end")
+            self.process = None
+            self.prompt = ""
+            self.refresh_line_number()
