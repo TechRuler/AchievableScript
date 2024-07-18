@@ -69,12 +69,18 @@ class Editor(tk.Frame):
             self.CurrentLineHighlight(widget=self.editor,delay=10)
 
         return "break"
-    def scrollbar_configure(self,scrollbar="grey",scroll_bg="white"):
+    def scrollbar_configure(self,scrollbar="grey",scroll_bg="white",active_scrollbar="white"):
+        self.style.layout("Vertical.TScrollbar",
+                 [('Vertical.Scrollbar.trough', {'children': [('Vertical.Scrollbar.thumb', {'expand': '1', 'sticky': 'nswe'})], 'sticky': 'ns'})])
+        
+        self.style.layout("Horizontal.TScrollbar",
+                 [('Horizontal.TScrollbar.trough', {'children': [('Vertical.Scrollbar.thumb', {'expand': '1', 'sticky': 'nswe'})], 'sticky': 'ew'})])
+
         self.style.configure("Vertical.TScrollbar",background=scrollbar,bordercolor=scroll_bg,darkcolor=scrollbar,lightcolor=scrollbar,troughcolor=scroll_bg,arrowcolor=scroll_bg,gripcount=0)
-        self.style.map("Vertical.TScrollbar",background=[('active',scrollbar)])
+        self.style.map("Vertical.TScrollbar",background=[('active',active_scrollbar)])
 
         self.style.configure("Horizontal.TScrollbar",background=scrollbar,bordercolor=scroll_bg,darkcolor=scroll_bg,lightcolor=scroll_bg,troughcolor=scroll_bg,arrowcolor=scroll_bg,gripcount=0)
-        self.style.map("Horizontal.TScrollbar",background=[('active',scrollbar)])
+        self.style.map("Horizontal.TScrollbar",background=[('active',active_scrollbar)])
 
     def setCurrentLinecolor(self,color):
         self.editor.tag_configure("CurrentLine",background=color)
