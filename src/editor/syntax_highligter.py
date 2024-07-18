@@ -15,13 +15,13 @@ class SyntaxHighlighter:
         self.builtins = set(dir(builtins))
         self.user_defined_elements = set()  # Store user-defined functions and classes
         self.imported_modules = {}  # Dictionary to store imported modules and their aliases
-    def configures(self,method="purple",number="blue",operator="red",circle_brackets="blue",square_brackets="yellow",curlly_brackets="purple",variable_in_parameter="orange",variables="blue",decorator="purple",self_color="blue",keyword="blue",constant="purple",builtin="orange",string="green",comment="red",definition="purple",class_definition="purple"):
+    def configures(self,method="purple",number="blue",operator="red",circle_brackets="blue",square_brackets="yellow",curlly_brackets="purple",variable_in_parameter="tomato",variables="black",decorator="purple",self_color="blue",keyword="blue",constant="purple",builtin="orange",string="green",comment="red",definition="purple",class_definition="purple"):
         # Configure tags for highlighting
         self.master.tag_configure('keyword', foreground=keyword)
         self.master.tag_configure('constant', foreground=constant)
         self.master.tag_configure('self', foreground=self_color)
-        self.master.tag_configure('parameter', foreground=variable_in_parameter)
-        self.master.tag_configure('variable', foreground=variables)
+        # self.master.tag_configure('parameter', foreground=variable_in_parameter)
+        # self.master.tag_configure('variable', foreground=variables)
         self.master.tag_configure('special', foreground=keyword)
         self.master.tag_configure('builtin', foreground=builtin)
         self.master.tag_configure('method', foreground=method)
@@ -34,6 +34,7 @@ class SyntaxHighlighter:
         self.master.tag_configure('string', foreground=string)
         self.master.tag_configure('user_def', foreground=definition)  # New tag for user-defined elements
         self.master.tag_configure('class', foreground=class_definition)
+        self.master.tag_configure("variable", foreground="cyan")
         
 
          # self.text_widget.tag_configure('module', foreground='brown')
@@ -80,8 +81,10 @@ class SyntaxHighlighter:
         # Highlight imported module aliases throughout the file
         self.highlight_imported_modules(content)
 
+        self.tokenize_variables(content)
+
     def clear_tags(self):
-        tags = ['keyword', 'constant', 'self','parameter','variable','circle','square','curlly','oparators' ,'special', 'builtin', 'method', 'number', 'comment', 'string', 'module', 'user_module', 'user_def', 'class']
+        tags = ['keyword', 'constant',"variable", 'self','circle','square','curlly','oparators' ,'special', 'builtin', 'method', 'number', 'comment', 'string', 'module', 'user_module', 'user_def', 'class']
         for tag in tags:
             self.master.tag_remove(tag, '1.0', tk.END)
 
@@ -136,8 +139,8 @@ class SyntaxHighlighter:
             ('number',    r'\b\d+(\.\d*)?\b'),      # Integer or decimal number
             ('method',    r'\b\w+(?=\(\s*)'),
             ('self',      r'\bself\b'),
-            ('parameter', r'\b[A-Za-z_]\w+(?=\s*=\s*)'),
-            ('variable',  r"^[^\(\)\[\]\{\}=]+(?==)"),
+            # ('parameter', r'\(([^=,\s]+)|,\s*([^=,\s]+)'),
+            # ('variable',  r'\b[A-Za-z_]\w+(?=\s*=\s*)'),
             ('circle',    r'[\(\)]'),
             ('square',    r'[\[\]]'),
             ('curlly',    r'[\{\}]'),
@@ -151,7 +154,8 @@ class SyntaxHighlighter:
                 kind = mo.lastgroup
                 start, end = mo.span(kind)
                 self.apply_tag(f"{line_no + 1}.{start}", f"{line_no + 1}.{end}", kind)
-
+    
+        
     def tokenize_definitions(self, content):
         def_pattern = re.compile(r'^\s*(def)\s+([a-zA-Z_]\w*)', re.MULTILINE)
         class_pattern = re.compile(r'^\s*(class)\s+([a-zA-Z_]\w*)', re.MULTILINE)
@@ -238,6 +242,7 @@ if __name__ == "__main__":
     text_widget.config(font=("Consolas", 15))
 
     app = SyntaxHighlighter(master=text_widget)
+    app.configures()
 
     # Example of toggling the auto-coloring on and off
     # def toggle_coloring(event):
