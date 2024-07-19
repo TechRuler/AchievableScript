@@ -1,5 +1,7 @@
 from ctypes import windll
 import tkinter as tk 
+# import threading
+import ctypes
 class Window(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -57,7 +59,7 @@ class Window(tk.Tk):
         self.Title = tk.Label(self.titleBar,text="My Code editor",font=("Consolas",12))
         self.Title.pack(side="left")
 
-        self.title_close_button = tk.Button(self.titleBar,text=" X ",border=0,font=("Consolas",12),bg="white",command=self.destroy)
+        self.title_close_button = tk.Button(self.titleBar,text=" X ",border=0,font=("Consolas",12),bg="white",command=self.close_app)
         self.title_close_button.pack(side="right")
         self.title_resize_button = tk.Button(self.titleBar,text=" \u25a0 ",font=("Consolas",12),bg="white",border=0,command=self.resize_button_function)
         self.title_resize_button.pack(side="right")
@@ -65,6 +67,17 @@ class Window(tk.Tk):
         self.title_minimise_button.pack(side="right")
 
         self.config(bg="white")
+    def close_app(self):
+        self.force_close()
+
+    def force_close(self):
+        # Forcefully close the application using ctypes
+        try:
+            ctypes.windll.user32.PostQuitMessage(0)
+        except Exception as e:
+            print(f"Error while closing the application: {e}")
+        finally:
+            self.quit()  # Ensure the application is quit
     
     def highlight(self,widget,color):
         widget.config(bg=color)
