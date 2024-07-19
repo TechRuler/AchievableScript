@@ -142,7 +142,7 @@ class Editor(tk.Frame):
 
                     self.editor.delete(new_pos,"insert")
 
-                    self.line.redraw()
+                    self.__refresh_line_number()
                     self.CurrentLineHighlight(widget=self.editor,delay=10)
                     
 
