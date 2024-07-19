@@ -16,5 +16,9 @@ My-Editor is a Python code editor with integrated features for seamless coding a
 # Contributing
 Contributions are welcome! If you want to contribute to My-Editor, fork the repository and submit a pull request.
 
-# Third-Party Libraries
-This project utilizes third-party libraries for enhanced functionality.
+## Third-Party Libraries
+
+This project uses [Jedi](https://jedi.readthedocs.io/en/latest/) for code analysis and autocompletion. Jedi is licensed under the MIT License. The full license text is available in the `LICENSES/jedi_LICENSE` file.
+
+This project also uses [Pillow](https://pillow.readthedocs.io/en/stable/) for image processing. Pillow is licensed under the HPND License. The full license text is available in the `LICENSES/pillow_LICENSE` file.
+
