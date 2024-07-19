@@ -88,7 +88,7 @@ class Editor(tk.Frame):
         self.CurrentLineHighlight(widget=self.editor,delay=10)
 
     def start_autocomplet(self):
-        self.auto_complete.autcomplete_function()
+        self.auto_complete.on_key_release()
         self.__refresh_line_number()
     def button_1_binding(self):
         self.__refresh_line_number()

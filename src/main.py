@@ -153,6 +153,7 @@ class App(Window):
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14),toggle_color=self.currentline)
+        self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         
         self.editor.setCurrentLinecolor(self.currentline)
         

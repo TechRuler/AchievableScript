@@ -2,7 +2,8 @@ import tkinter as tk
 import keyword
 import types
 import pkgutil
-
+import jedi 
+from src.gui.scrollbar import AutoScrollbar
 
 class PopUp(tk.Frame):
     def __init__(self,*arg,**kwarg):
@@ -26,7 +27,7 @@ class PopUp(tk.Frame):
         element.bind("<Leave>",lambda event=None, i=element:self.hightlight_leave(i))
         self.element_list.append(element)
     
-
+    
     def selection_get(self):
         text = self.select_element.cget("text")
         return text
@@ -78,49 +79,125 @@ class PopUp(tk.Frame):
 
 
 class Autocomplete(tk.Frame):
-    def __init__(self,master,*arg,**kwarg):
-        tk.Frame.__init__(self,master,*arg,*kwarg)
+    def __init__(self, master, *arg, **kwarg):
+        tk.Frame.__init__(self, master, *arg, **kwarg)
         self.master = master
-        self.autocomplete_bool = False
-        self.data_for_autocomplete = keyword.kwlist + dir(__builtins__) + [name for name,_ in vars(types).items()if isinstance(getattr(types,name),type)]+[name for _,name,_ in pkgutil.iter_modules()]
-        self.pop_up_y = 22
         
-        self.pop_up = PopUp(self)
-        self.pop_up.pack(fill="both",expand=True)
-    
-    def change_y(self,y):
+
+        self.autocomplete_bool = False
+        self.data_for_autocomplete = keyword.kwlist + dir(__builtins__) + [name for name, _ in vars(types).items() if isinstance(getattr(types, name), type)] + [name for _, name, _ in pkgutil.iter_modules()]
+        self.pop_up_y = 22
+        self.pop_up = PopUp(self.master)
+        self.pop_up.place_forget()
+
+        self.calltip_popup = tk.Toplevel(self)
+        self.calltip_popup.withdraw()
+        self.calltip_popup.wm_overrideredirect(True)
+        self.calltip_popup.wm_attributes("-topmost", 1)
+        self.scrollbar = AutoScrollbar(self.calltip_popup, orient="vertical")
+        self.calltip_label = tk.Text(self.calltip_popup, background="lightyellow", height=5, borderwidth=1, state="disabled", cursor="arrow", wrap="word", yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.calltip_label.yview)
+        self.scrollbar.grid(row=0,column=1,sticky="ns")
+        self.calltip_label.grid(row=0,column=0,sticky="nsew")
+        self.rowconfigure(0,weight=1)
+        self.columnconfigure(0,weight=1)
+
+    def change_y(self, y):
         self.pop_up_y = y
-    def autcomplete_function(self,event=None):
-        word = self.master.get("insert -1c wordstart","insert -1c wordend")
-        line_text = self.master.get("insert linestart","insert")
+
+    def get_cursor_position(self):
+        cursor_index = self.master.index(tk.INSERT)
+        line, column = map(int, cursor_index.split('.'))
+        return line, column
+
+    def on_key_release(self, event=None):
+        code = self.master.get("1.0", "end-1c")
+        line, column = self.get_cursor_position()
+        script = jedi.Script(code)
+
+        try:
+            completions = script.complete(line, column)
+            self.autocomplete_function(completions)
+            call_signatures = script.get_signatures(line, column)
+            self.show_calltip(call_signatures)
+        except Exception as e:
+            self.hide_autocomplete()
+            self.hide_calltip()
+
+    def autocomplete_function(self, completions):
+        word = self.master.get("insert -1c wordstart", "insert -1c wordend")
+        line_text = self.master.get("insert linestart", "insert")
         bbox = self.master.bbox("insert")
         if bbox:
-            x,y,_,_ = bbox
-        if line_text.lstrip().startswith("#"):
-            self.place_forget()
-            self.autocomplete_bool = False
+            x, y, _, _ = bbox
+        if line_text.strip() == "" or line_text.lstrip().startswith("#"):
+            self.hide_autocomplete()
         else:
-            data = [i for i in self.data_for_autocomplete if i.startswith(word)]
+            data = [i.name for i in completions]
             new_suggestion = len(data)
+
             if new_suggestion > 10:
                 height = 185
-                self.place_configure(x=x,y=(y+self.pop_up_y),height=height,width=350)
-                self.autocomplete_bool = True
-            elif new_suggestion == 0:
-                self.place_forget()
-                self.autocomplete_bool = False
+            elif word == data[0]:
+                self.hide_autocomplete()
             else:
-                height = new_suggestion*20
-                self.place_configure(x=x,y=(y+self.pop_up_y),height=height,width=350)
-                self.autocomplete_bool= True
+                height = new_suggestion * 20
 
-            self.pop_up.delete()
-            for i in data:
+            if new_suggestion > 0:
+                self.pop_up.place_configure(x=x, y=(y + self.pop_up_y), height=height, width=300)
+                self.autocomplete_bool = True
+                self.pop_up.delete()
+                for i in data:
                     self.pop_up.insert(text=i)
-            self.pop_up.select_set(0)
-    def add_option_to_master(self,event=None):
-        self.master.delete("insert -1c wordstart","insert -1c wordend")
-        self.master.insert("insert",self.pop_up.selection_get())
+                self.pop_up.select_set(0)
+            else:
+                self.hide_autocomplete()
+
+    def hide_autocomplete(self, event=None):
+        self.pop_up.place_forget()
+        self.autocomplete_bool = False
+
+    def show_calltip(self, call_signatures):
+        if call_signatures:
+            calltip = call_signatures[0].docstring()
+            bbox = self.master.bbox("insert")
+            if bbox:
+                x, y, width, height = bbox
+                x += self.master.winfo_rootx()
+                y += self.master.winfo_rooty()
+
+                screen_height = self.winfo_screenheight()
+                calltip_height = self.calltip_label.winfo_reqheight()
+
+                if y + height + calltip_height + self.pop_up_y > screen_height:
+                    y -= (calltip_height + self.pop_up_y + height)
+                else:
+                    y -= (calltip_height)
+                if calltip_height <= 5:
+                    print(calltip_height)
+                    self.calltip_label.configure(height=calltip_height)
+                else:
+                    self.calltip_label.configure(height=5)
+
+                self.calltip_label.configure(state="normal")
+                self.calltip_label.delete("1.0", "end")
+                self.calltip_label.insert("1.0", calltip)
+                self.calltip_label.configure(state="disabled")
+                self.calltip_popup.geometry(f"+{x}+{y}")
+                self.calltip_popup.deiconify()
+        else:
+            self.hide_calltip()
+
+    def hide_calltip(self):
+        self.calltip_popup.withdraw()
+
+    def add_option_to_master(self, event=None):
+        if self.autocomplete_bool:
+            self.master.delete("insert -1c wordstart", "insert -1c wordend")
+            self.master.insert("insert", self.pop_up.selection_get())
+            self.hide_autocomplete()
+            return 'break'
+
 
 if __name__ == "__main__":
     def enter(event=None):
@@ -138,7 +215,7 @@ if __name__ == "__main__":
     auto_complet = Autocomplete(master=editor)
 
     auto_complet.pop_up.add_command_for_element = enter
-    editor.bind("<KeyRelease>",auto_complet.autcomplete_function)
+    editor.bind("<KeyRelease>",auto_complet.on_key_release)
     editor.bind("<Return>",enter)
 
 
