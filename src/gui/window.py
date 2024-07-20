@@ -1,7 +1,7 @@
 from ctypes import windll
 import tkinter as tk 
-# import threading
-
+import threading
+import time 
 import ctypes
 from ctypes import wintypes
 
@@ -47,6 +47,10 @@ class Window(tk.Tk):
         self.setup_ui()
         self.menubar()
         self.bindings()
+
+        self.stop_event = threading.Event()
+        self.thread = threading.Thread(target=self.background_task)
+        self.thread.start()
     def bindings(self):
         self.titleBar.bind("<Map>",self.Mapping)
         self.titleBar.bind("<B1-Motion>",self.on_drag)
@@ -101,7 +105,10 @@ class Window(tk.Tk):
 
         self.config(bg="white")
     def close_app(self):
-        self.force_close()
+        # Set the stop_event to stop the background thread
+        self.stop_event.set()
+        self.thread.join()  # Wait for the background thread to finish
+        self.force_close()  # Proceed to force close the application
 
     def force_close(self):
         # Forcefully close the application using ctypes
@@ -111,6 +118,12 @@ class Window(tk.Tk):
             print(f"Error while closing the application: {e}")
         finally:
             self.quit()  # Ensure the application is quit
+    def background_task(self):
+        while not self.stop_event.is_set():
+            # Simulating background work
+            print("Background task is running...")
+            time.sleep(1)
+        print("Background task has stopped.")
     
     def highlight(self,widget,color):
         widget.config(bg=color)
