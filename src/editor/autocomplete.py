@@ -1,7 +1,5 @@
 import tkinter as tk
-import keyword
-import types
-import pkgutil
+
 import jedi 
 from src.gui.scrollbar import AutoScrollbar
 
@@ -85,7 +83,7 @@ class Autocomplete(tk.Frame):
         
 
         self.autocomplete_bool = False
-        self.data_for_autocomplete = keyword.kwlist + dir(__builtins__) + [name for name, _ in vars(types).items() if isinstance(getattr(types, name), type)] + [name for _, name, _ in pkgutil.iter_modules()]
+        
         self.pop_up_y = 22
         self.pop_up = PopUp(self.master)
         self.pop_up.place_forget()
