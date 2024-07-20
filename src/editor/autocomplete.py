@@ -92,10 +92,23 @@ class Autocomplete(tk.Frame):
         self.calltip_popup.wm_overrideredirect(True)
         self.calltip_popup.wm_attributes("-topmost", 1)
         self.scrollbar = AutoScrollbar(self.calltip_popup, orient="vertical")
-        self.calltip_label = tk.Text(self.calltip_popup, background="lightyellow", height=5, borderwidth=1, state="disabled", cursor="arrow", wrap="word", yscrollcommand=self.scrollbar.set)
+        self.calltip_label = tk.Text(self.calltip_popup, background="lightyellow", height=6, borderwidth=1, state="disabled", cursor="arrow", wrap="word",border=0, yscrollcommand=self.scrollbar.set)
         self.scrollbar.config(command=self.calltip_label.yview)
         self.scrollbar.grid(row=0,column=1,sticky="ns")
         self.calltip_label.grid(row=0,column=0,sticky="nsew")
+        self.rowconfigure(0,weight=1)
+        self.columnconfigure(0,weight=1)
+        
+
+        self.detail_calltip_popup = tk.Toplevel(self)
+        self.detail_calltip_popup.withdraw()
+        self.detail_calltip_popup.wm_overrideredirect(True)
+        self.detail_calltip_popup.wm_attributes("-topmost", 1)
+        self.detail_scrollbar = AutoScrollbar(self.detail_calltip_popup, orient="vertical")
+        self.detail_calltip_label = tk.Text(self.detail_calltip_popup, background="lightblue", height=10, width=40, borderwidth=0, state="disabled", cursor="arrow", wrap="word", yscrollcommand=self.detail_scrollbar.set)
+        self.detail_scrollbar.config(command=self.detail_calltip_label.yview)
+        self.detail_scrollbar.grid(row=0,column=1,sticky="ns")
+        self.detail_calltip_label.grid(row=0,column=0,sticky="nsew")
         self.rowconfigure(0,weight=1)
         self.columnconfigure(0,weight=1)
 
@@ -120,6 +133,7 @@ class Autocomplete(tk.Frame):
         except Exception as e:
             self.hide_autocomplete()
             self.hide_calltip()
+            self.hide_detail_calltip()
 
     def autocomplete_function(self, completions):
         word = self.master.get("insert -1c wordstart", "insert -1c wordend")
@@ -147,12 +161,15 @@ class Autocomplete(tk.Frame):
                 for i in data:
                     self.pop_up.insert(text=i)
                 self.pop_up.select_set(0)
+                self.update_detail_calltip()
+                
             else:
                 self.hide_autocomplete()
 
     def hide_autocomplete(self, event=None):
         self.pop_up.place_forget()
         self.autocomplete_bool = False
+        self.hide_detail_calltip()
 
     def show_calltip(self, call_signatures):
         if call_signatures:
@@ -170,11 +187,11 @@ class Autocomplete(tk.Frame):
                     y -= (calltip_height + self.pop_up_y + height)
                 else:
                     y -= (calltip_height)
-                if calltip_height <= 5:
+                if calltip_height <= 6:
                     print(calltip_height)
                     self.calltip_label.configure(height=calltip_height)
                 else:
-                    self.calltip_label.configure(height=5)
+                    self.calltip_label.configure(height=6)
 
                 self.calltip_label.configure(state="normal")
                 self.calltip_label.delete("1.0", "end")
@@ -187,6 +204,38 @@ class Autocomplete(tk.Frame):
 
     def hide_calltip(self):
         self.calltip_popup.withdraw()
+    def update_detail_calltip(self, event=None):
+        if self.autocomplete_bool:
+            try:
+                selected_item = self.pop_up.selection_get()
+                script = jedi.Script(self.master.get("1.0", "end-1c"))
+                completions = script.complete(*self.get_cursor_position())
+                for comp in completions:
+                    if comp.name == selected_item:
+                        docstring = comp.docstring()
+                        if docstring.strip():
+                            self.detail_calltip_label.configure(state="normal")
+                            self.detail_calltip_label.delete("1.0", "end")
+                            self.detail_calltip_label.insert("1.0", docstring)
+                            self.detail_calltip_label.configure(state="disabled")
+
+                            bbox = self.master.bbox("insert")
+                            if bbox:
+                                x, y, width, height = bbox
+                                x += self.master.winfo_rootx()
+                                y += self.master.winfo_rooty() + 25
+
+                                self.detail_calltip_popup.geometry(f"+{x + 300}+{y}")
+                                self.detail_calltip_popup.deiconify()
+                                
+                        else:
+                            self.hide_detail_calltip()
+            except tk.TclError:
+                pass
+
+    def hide_detail_calltip(self):
+        self.detail_calltip_popup.withdraw()
+
 
     def add_option_to_master(self, event=None):
         if self.autocomplete_bool:

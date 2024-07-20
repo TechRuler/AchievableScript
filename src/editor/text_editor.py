@@ -93,7 +93,8 @@ class Editor(tk.Frame):
     def button_1_binding(self):
         self.__refresh_line_number()
         self.CurrentLineHighlight(widget=self.editor,delay=10)
-        self.auto_complete.pop_up.place_forget()
+        self.auto_complete.hide_autocomplete()
+        self.auto_complete.hide_calltip()
     def __forget_line_color(self):
         self.editor.tag_remove("CurrentLine","1.0","end")
 
