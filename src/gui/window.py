@@ -1,7 +1,40 @@
 from ctypes import windll
 import tkinter as tk 
 # import threading
+
 import ctypes
+from ctypes import wintypes
+
+# Constants for DPI awareness levels
+PROCESS_PER_MONITOR_DPI_AWARE = 2
+
+
+# Load necessary libraries
+user32 = ctypes.WinDLL('user32', use_last_error=True)
+shcore = ctypes.WinDLL('Shcore', use_last_error=True)
+
+# Function to set process DPI awareness (for Windows 8.1 and later)
+def set_process_dpi_awareness():
+    try:
+        shcore.SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE)
+    except AttributeError:
+        # Fallback for older versions of Windows (Vista, 7, 8)
+        user32.SetProcessDPIAware()
+
+# Function to adjust window DPI awareness for Windows 10
+def set_process_dpi_aware_v2():
+    try:
+        success = user32.SetProcessDpiAwarenessContext(wintypes.HANDLE(-4))  # DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+        if not success:
+            raise ctypes.WinError(ctypes.get_last_error())
+    except AttributeError:
+        # If SetProcessDpiAwarenessContext is not available, use the older method
+        set_process_dpi_awareness()
+
+# Apply DPI awareness settings
+set_process_dpi_aware_v2()
+
+
 class Window(tk.Tk):
     def __init__(self):
         super().__init__()

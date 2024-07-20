@@ -45,6 +45,7 @@ class Editor(tk.Frame):
         self.editor.bind("<B1-Motion>",lambda event=None:self.__forget_line_color())
         self.editor.bind("<MouseWheel>",lambda event=None:self.__refresh_line_number())
         self.editor.bind("<Return>",self.autoindent)
+        self.editor.bind("<Control-Return>",self.Enter_)
         self.editor.bind("<BackSpace>",lambda event=None:self.backspace())
         self.editor.bind("<(>",lambda event=None:self.autocomplete_brackets(bracket="("))
         self.editor.bind("<)>",lambda event=None:self.autocomplete_brackets(bracket=")"))
@@ -56,6 +57,7 @@ class Editor(tk.Frame):
         self.editor.bind('<">',lambda event=None:self.autocomplete_strings(symbol='"'))
         self.editor.bind("<Tab>",lambda event=None:self.on_tab_click())
         self.editor.bind("<Control-m>",lambda event=None:self.do_comment())
+        
         
         self.auto_complete.pop_up.add_command_for_element = self.add_by_click
     
@@ -124,6 +126,42 @@ class Editor(tk.Frame):
             self.__refresh_line_number()
 
         self.editor.see("insert")
+
+        return "break"
+    def Enter_(self,event=None):
+        index = self.editor.index(tk.INSERT)
+        index2 = "%s-%sc"%(index,1)
+        word = self.editor.get(index2,index)
+        line = self.editor.get("insert linestart", "insert lineend")
+
+        match = re.match(r'^(\s+)', line)
+
+        if word == ":":
+            current_indent = len(match.group(0)) if match else 0
+                
+            
+            new_indent = current_indent + 4
+            
+            self.editor.insert("insert", event.char + " "*new_indent)
+        elif self.auto_complete.autocomplete_bool == True:
+            self.button_1_binding()
+            whitespace = match.group(0) if match else ""
+            self.select_ = self.editor.get("insert","insert lineend")
+            self.editor.insert("insert + 1line","") 
+            self.editor.insert("insert",self.select_)
+        
+            self.editor.insert("insert", f"\n{whitespace}")
+            self.editor.delete("insert","insert lineend")
+        else:
+            whitespace = match.group(0) if match else ""
+            self.select_ = self.editor.get("insert","insert lineend")
+            self.editor.insert("insert + 1line","")
+            self.editor.insert("insert",self.select_)
+        
+            self.editor.insert("insert", f"\n{whitespace}")
+            self.editor.delete("insert","insert lineend")
+        self.CurrentLineHighlight(widget=self.editor,delay=10)
+        self.__refresh_line_number()
 
         return "break"
     def backspace(self):

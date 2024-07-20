@@ -7,37 +7,6 @@ from tkinter import*
 from tkinter.filedialog import*
 from PIL import ImageTk, Image
 import os
-import ctypes
-from ctypes import wintypes
-
-# Constants for DPI awareness levels
-PROCESS_PER_MONITOR_DPI_AWARE = 2
-
-
-# Load necessary libraries
-user32 = ctypes.WinDLL('user32', use_last_error=True)
-shcore = ctypes.WinDLL('Shcore', use_last_error=True)
-
-# Function to set process DPI awareness (for Windows 8.1 and later)
-def set_process_dpi_awareness():
-    try:
-        shcore.SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE)
-    except AttributeError:
-        # Fallback for older versions of Windows (Vista, 7, 8)
-        user32.SetProcessDPIAware()
-
-# Function to adjust window DPI awareness for Windows 10
-def set_process_dpi_aware_v2():
-    try:
-        success = user32.SetProcessDpiAwarenessContext(wintypes.HANDLE(-4))  # DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
-        if not success:
-            raise ctypes.WinError(ctypes.get_last_error())
-    except AttributeError:
-        # If SetProcessDpiAwarenessContext is not available, use the older method
-        set_process_dpi_awareness()
-
-# Apply DPI awareness settings
-set_process_dpi_aware_v2()
 
 class App(Window):
     def __init__(self):
@@ -376,6 +345,7 @@ class App(Window):
                 self.editor=self.add_editor_to_tab(file,name,self.explorer.image_python)
                 self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
                 self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+                self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
                 self.editor.editor.bind("<Shift-Return>",self.run_code)
                 self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
                 self.editor.editor.bind("<Control-minus>",lambda event=None:self.zoom_out())
