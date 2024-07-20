@@ -14,7 +14,6 @@ class App(Window):
         
         self.setGeometry(1400,800,200,100)
         
-        
         self.title("Editor")
         self.icon = PhotoImage(file="assets/logo/editor.png")
         self.app_icon(image=self.icon)
@@ -288,12 +287,8 @@ class App(Window):
         name = os.path.basename(self.file)
         if name.endswith(".py"):
                 
-                self.editor=self.add_editor_to_tab(self.file,name,self.explorer.image_python)
-                self.editor.configurations(widget=self.editor.editor,method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.variable,decorator=self.decorator,self_color=self.self_color)
-                self.editor.defaultpythonsyntax(widget=self.editor.editor,keyword=self.keyword,builtin=self.builtin,string=self.string,comment=self.comment,definition=self.definition)
-                self.editor.highlight_syntax(widget=self.editor.editor)
-                self.editor.editor.bind("<Shift-Return>",lambda event=None:self.run_code())
-                # self.editor.editor.bind("<KeyRelease>",lambda event=None:self.editor.highlight_syntax(widget=self.editor.editor))
+                self.add_python_file(self.file,name)
+                
         elif name.endswith(".txt"):
                 
                 self.editor = self.add_editor_to_tab(self.file,name,self.explorer.image_text)
@@ -342,13 +337,8 @@ class App(Window):
                         self.tab.tab_click(None, associated_tab)
                         return
                 
-                self.editor=self.add_editor_to_tab(file,name,self.explorer.image_python)
-                self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
-                self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
-                self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
-                self.editor.editor.bind("<Shift-Return>",self.run_code)
-                self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
-                self.editor.editor.bind("<Control-minus>",lambda event=None:self.zoom_out())
+                self.add_python_file(file,name)
+                
                 # self.editor.editor.bind("<KeyRelease>",lambda event=None:self.editor.highlight_syntax(widget=self.editor.editor))
             elif name.endswith(".txt"):
                 # Check if tab already exists for this file
@@ -375,7 +365,12 @@ class App(Window):
                         self.tab.tab_click(None, associated_tab)
                         return
                 self.add_image_to_tab(file,name,self.explorer.image_image)
-            
+    def add_python_file(self,file,name):
+        self.editor=self.add_editor_to_tab(file,name,self.explorer.image_python)
+        self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
+        self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+        self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+        self.editor.editor.bind("<Shift-Return>",self.run_code)
     def add_editor_to_tab(self,file,name,image):
         self.editor = Editor(self.tab)
         self.tab.add_tab(frame=self.editor, text=name, image=image, file_path=file)
@@ -388,7 +383,8 @@ class App(Window):
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
         self.file = file
 
-        
+        self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
+        self.editor.editor.bind("<Control-minus>",lambda event=None:self.zoom_out())
         
         with open(file, "r",encoding='utf-8') as f:
             self.editor.editor.insert("1.0", f.read())
