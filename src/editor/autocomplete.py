@@ -1,5 +1,4 @@
 import tkinter as tk
-
 import jedi 
 from src.gui.scrollbar import AutoScrollbar
 
