@@ -4,6 +4,7 @@ from src.gui.notebook import NoteBook
 from src.editor.text_editor import Editor
 from src.terminal.pythonshell import PythonShell
 from tkinter import*
+from tkinter import ttk
 from tkinter.filedialog import*
 from PIL import ImageTk, Image
 import os
@@ -83,9 +84,12 @@ class App(Window):
         self.hid_button.pack(side="top",fill="x")
         self.side_bar.pack(side="left",fill="y")
 
-        self.explorer = FileManager(self,width=350,cursor="hand2")
+        self.side_panel_window = PanedWindow(self,orient="horizontal",background=self.app_background)
+        self.side_panel_window.pack(expand=True,fill="both")
+
+        self.explorer = FileManager(self.side_panel_window,width=350,cursor="hand2")
         self.explorer.tree.color_config(default_bgcolor=self.app_background,default_fgcolor=self.foreground,selected_bgcolor=self.background,selected_fgcolor=self.foreground,hover_bgcolor=self.currentline,font_size=10)
-        self.explorer.pack(side="left",fill="y")
+        # self.explorer.pack(side="left",fill="y")
         self.explorer.pack_propagate(0)
         self.explorer.configures(background=self.app_background,foreground=self.foreground,selected_bg=self.currentline,selected_fg=self.foreground,border_color=self.selection)
         self.explorer.config(bg=self.app_background)
@@ -106,11 +110,16 @@ class App(Window):
 
 
 
-        self.editor_frame = Frame(self)
-        self.editor_frame.pack(side="right",fill=BOTH,expand=True)
+        self.editor_frame = PanedWindow(self,orient="vertical",background=self.app_background)
+        # self.editor_frame.pack(side="right",fill=BOTH,expand=True)
+
+        self.side_panel_window.add(self.explorer)
+        self.side_panel_window.add(self.editor_frame)
+
+        self.new_panel_index = IntVar(value=0)
         self.tab = NoteBook(self.editor_frame,height=550)
         self.tab.configure(background=self.background)
-        self.tab.pack(side="top",fill=BOTH,expand=True)
+        # self.tab.pack(side="top",fill=BOTH,expand=True)
         self.tab.pack_propagate(0)
 
         self.tab.config_colors(tab_bg=self.tab_bg,tab_bar_color=self.tab_bg,tab_fg=self.foreground,selected_tab_color=self.background,frame_color=self.background,line_color="#0078D4")
@@ -132,9 +141,11 @@ class App(Window):
 
         self.tab.add_tab(frame=self.editor,text="Untitled")
 
+        
+
 
         self.output_frame = Frame(self.editor_frame)
-        self.output_frame.pack(side="top",fill=BOTH)
+        # self.output_frame.pack(side="top",fill=BOTH)
         self.output_frame_inner = Frame(self.output_frame,bg=self.app_background,border=0)
         self.output_frame_inner.pack(side="top",fill="x")
         self.output_label = Label(self.output_frame_inner,text="Terminal",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0)
@@ -147,7 +158,7 @@ class App(Window):
         self.output_container.pack(side="top",expand=True,fill=BOTH)
 
         self.output = PythonShell(self.output_container)
-        self.output.pack(side="top",fill="both")
+        self.output.pack(side="top",fill="both",expand=True)
 
         self.output_terminate = Button(self.output_frame_inner,text="Terminate",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,command=self.output.cancel_command)
         self.output_terminate.pack(side="right",fill="y")
@@ -157,6 +168,14 @@ class App(Window):
 
         self.output.output_line.changefg(self.foreground)
         self.output.output_line.changefont(("Consolas",15))
+
+        # added frames to panelwindow
+
+        self.editor_frame.add(self.tab)
+
+        self.editor_frame.add(self.output_frame)
+
+        self.panewindow_index = IntVar(value=1)
         
         
         
@@ -255,16 +274,23 @@ class App(Window):
             self.root_node_add_file.pack_forget()
     
     def hide_terminal(self):
-        if self.output_frame.winfo_ismapped():
-            self.output_frame.pack_forget()
+        if self.panewindow_index.get() == -1:
+            self.editor_frame.add(self.output_frame)
+            self.panewindow_index.set(1)
         else:
-            self.output_frame.pack(side="top",fill=BOTH)
+            self.editor_frame.forget(self.output_frame)
+            self.panewindow_index.set(-1)
     def hide_side(self):
-        if self.explorer.winfo_ismapped():
-            self.explorer.pack_forget()
+        if self.new_panel_index.get() == -1:
+            self.side_panel_window.add(self.explorer)
+            self.side_panel_window.forget(self.editor_frame)
+            self.side_panel_window.add(self.editor_frame)
             self.hid_button.config(text=">")
+            self.new_panel_index.set(0)
         else:
-            self.explorer.pack(side="left",fill="y")
+            # self.explorer.pack(side="left",fill="y")
+            self.side_panel_window.forget(self.explorer)
+            self.new_panel_index.set(-1)
             self.hid_button.config(text="<")
     def just_show_side_bar(self):
         if not self.explorer.winfo_ismapped():
