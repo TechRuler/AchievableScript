@@ -107,7 +107,7 @@ class Window(tk.Tk):
     def close_app(self):
         # Set the stop_event to stop the background thread
         self.stop_event.set()
-        # self.thread.join()  # Wait for the background thread to finish
+        self.thread.join()  # Wait for the background thread to finish
         self.force_close()  # Proceed to force close the application
 
     def force_close(self):
