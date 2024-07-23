@@ -61,7 +61,7 @@ class NoteBook(tk.Frame):
         text_label = tk.Label(tab, text=self.text, fg="white", background=self.original_color, font=("Consolas", 12),pady=10)
         text_label.pack(side="left", fill="y")
 
-        close_button = tk.Label(tab, text="X", border=0, background=self.original_color, fg="white", font=("Consolas", 12),pady=10)
+        close_button = tk.Label(tab, text="✕", border=0, background=self.original_color, fg="white", font=("Consolas", 12),pady=10)
         close_button.pack(side="right", fill="y", padx=(20, 5))
 
         # Store the frame, its associated tab, and file path

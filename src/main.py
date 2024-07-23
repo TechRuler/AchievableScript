@@ -150,7 +150,7 @@ class App(Window):
         self.output_frame_inner.pack(side="top",fill="x")
         self.output_label = Label(self.output_frame_inner,text="Terminal",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0)
         self.output_label.pack(side="left",fill="y")
-        self.output_close = Button(self.output_frame_inner,text=" X ",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,command=self.hide_terminal)
+        self.output_close = Button(self.output_frame_inner,text=" ✕ ",font=("Consolas",15),bg=self.app_background,fg=self.foreground,border=0,command=self.hide_terminal)
         self.output_close.pack(side="right",fill="y")
 
 

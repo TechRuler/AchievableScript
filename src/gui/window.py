@@ -96,7 +96,7 @@ class Window(tk.Tk):
         self.Title = tk.Label(self.titleBar,text="My Code editor",font=("Consolas",12))
         self.Title.pack(side="left")
 
-        self.title_close_button = tk.Button(self.titleBar,text=" X ",border=0,font=("Consolas",12),bg="white",command=self.close_app)
+        self.title_close_button = tk.Button(self.titleBar,text=" ✕ ",border=0,font=("Consolas",12),bg="white",command=self.close_app)
         self.title_close_button.pack(side="right")
         self.title_resize_button = tk.Button(self.titleBar,text=" \u25a0 ",font=("Consolas",12),bg="white",border=0,command=self.resize_button_function)
         self.title_resize_button.pack(side="right")
