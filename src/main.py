@@ -299,10 +299,12 @@ class App(Window):
     def run_code(self,event=None):
         
         self.output.run_code(self.tab.file)
-        if not self.output_frame.winfo_ismapped():
-            self.output_frame.pack(side="top",fill=BOTH)
+        if self.panewindow_index.get() == -1:
+            self.editor_frame.add(self.output_frame)
+            self.panewindow_index.set(1)
         else:
-             pass
+             self.editor_frame.forget(self.output_frame)
+             self.panewindow_index.set(-1)
         return "break"
     def new_file(self):
         self.file = ""

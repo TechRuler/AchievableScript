@@ -49,8 +49,8 @@ class Window(tk.Tk):
         self.bindings()
 
         self.stop_event = threading.Event()
-        # self.thread = threading.Thread(target=self.background_task)
-        # self.thread.start()
+        self.thread = threading.Thread(target=self.background_task)
+        self.thread.start()
     def bindings(self):
         self.titleBar.bind("<Map>",self.Mapping)
         self.titleBar.bind("<B1-Motion>",self.on_drag)
