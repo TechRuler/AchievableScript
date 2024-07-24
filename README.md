@@ -26,5 +26,4 @@ This project uses [Jedi](https://jedi.readthedocs.io/en/latest/) for code analys
 
 This project also uses [Pillow](https://pillow.readthedocs.io/en/stable/) for image processing. Pillow is licensed under the HPND License. The full license text is available in the `LICENSES/pillow_LICENSE` file.
 
-check
 
