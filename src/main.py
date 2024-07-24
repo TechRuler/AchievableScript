@@ -132,10 +132,11 @@ class App(Window):
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14),toggle_color=self.currentline)
         self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+        self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         
         self.editor.setCurrentLinecolor(self.currentline) 
         
-
+        self.editor.change_indent_color(self.selection)
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         
 
@@ -398,6 +399,8 @@ class App(Window):
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+        self.editor.change_indent_color(self.selection)
+        self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         self.editor.editor.bind("<Shift-Return>",self.run_code)
     def add_editor_to_tab(self,file,name,image):
         self.editor = Editor(self.tab)

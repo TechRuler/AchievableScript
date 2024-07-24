@@ -4,13 +4,19 @@ from src.editor.line_number import LineNumber
 from src.gui.scrollbar import AutoScrollbar
 from src.editor.autocomplete import Autocomplete
 from src.editor.syntax_highligter import SyntaxHighlighter
+from src.editor.minimap import TextPeer
 import re 
 class Editor(tk.Frame):
     def __init__(self,*arg,**kwarg):
         tk.Frame.__init__(self,*arg,**kwarg)
+        self.indent_guides = []
+        self.indentation_guide_color = "spring green"
         self.style = ttk.Style()
        
         self.editor = tk.Text(self,font=("Consolas",15),wrap="none")
+
+        self.minimap = TextPeer(self.editor,font=("Consolas",2),state="disable",wrap=None,border=0)
+        
 
         self.syntax = SyntaxHighlighter(master=self.editor)
 
@@ -21,7 +27,7 @@ class Editor(tk.Frame):
         self.line.attach(self.editor)
         self.line.changefont(("Consolas",15))
         
-        self.vertical_scrollbar = AutoScrollbar(self,orient="vertical",command=self.editor.yview)
+        self.vertical_scrollbar = AutoScrollbar(self,orient="vertical",command=self.muliple_scroll)
 
         self.horizontal_scrollbar = AutoScrollbar(self,orient="horizontal",command=self.editor.xview)
        
@@ -32,7 +38,8 @@ class Editor(tk.Frame):
 
         self.line.grid(row=0,column=0,sticky="ns")
         self.editor.grid(row=0,column=1,sticky="nsew")
-        self.vertical_scrollbar.grid(row=0,column=2,rowspan=2,sticky="ns")
+        self.minimap.grid(row=0,column=2,rowspan=2,sticky="ns")
+        self.vertical_scrollbar.grid(row=0,column=3,rowspan=2,sticky="ns")
         self.horizontal_scrollbar.grid(row=1,column=0,columnspan=2,sticky="ew")
 
         self.rowconfigure(0,weight=1)
@@ -43,7 +50,7 @@ class Editor(tk.Frame):
         self.editor.bind("<Button-1>",lambda event=None:self.button_1_binding())
         self.editor.bind("<Double-Button-1>",lambda event=None:self.__forget_line_color())
         self.editor.bind("<B1-Motion>",lambda event=None:self.__forget_line_color())
-        self.editor.bind("<MouseWheel>",lambda event=None:self.__refresh_line_number())
+        self.editor.bind("<MouseWheel>",lambda event=None:self.function_mouse_wheel())
         self.editor.bind("<Return>",self.autoindent)
         self.editor.bind("<Control-Return>",self.Enter_)
         self.editor.bind("<BackSpace>",lambda event=None:self.backspace())
@@ -57,10 +64,17 @@ class Editor(tk.Frame):
         self.editor.bind('<">',lambda event=None:self.autocomplete_strings(symbol='"'))
         self.editor.bind("<Tab>",lambda event=None:self.on_tab_click())
         self.editor.bind("<Control-m>",lambda event=None:self.do_comment())
-        
+        self.vertical_scrollbar.bind("<B1-Motion>",lambda event=None:self.__refresh_line_number())
         
         self.auto_complete.pop_up.add_command_for_element = self.add_by_click
-    
+    def function_mouse_wheel(self):
+        self.minimap.yview_moveto(self.editor.yview()[0])
+        self.__refresh_line_number()
+    def muliple_scroll(self,*args):
+            self.editor.yview(*args)
+            self.minimap.yview(*args)
+    def change_indent_color(self,color):
+        self.indentation_guide_color = color 
     def add_by_click(self,event=None):
         if self.auto_complete.autocomplete_bool:
             self.auto_complete.add_option_to_master()
@@ -92,6 +106,7 @@ class Editor(tk.Frame):
     def start_autocomplet(self):
         self.auto_complete.on_key_release()
         self.__refresh_line_number()
+        self.draw_indentation_guides()
     def button_1_binding(self):
         self.__refresh_line_number()
         self.CurrentLineHighlight(widget=self.editor,delay=10)
@@ -102,6 +117,38 @@ class Editor(tk.Frame):
 
     def __refresh_line_number(self):
         self.after(2,self.line.redraw)
+        
+        self.editor.after(1, self.draw_indentation_guides)
+
+    def on_key_release(self, event=None):
+        self.draw_indentation_guides()
+
+    def on_scroll(self, event=None):
+        self.editor.after(1, self.draw_indentation_guides)
+
+    def draw_indentation_guides(self):
+        # Clear existing guides
+        for guide in self.indent_guides:
+            guide.destroy()
+        self.indent_guides.clear()
+        
+        lines = self.editor.get("1.0", "end-1c").split('\n')
+        for line_number, line_text in enumerate(lines, start=1):
+            match = re.match(r"^(\s+)", line_text)
+            if match:
+                indent_level = len(match.group(0))
+                for i in range(4, indent_level + 1, 4):
+                    self.draw_guide(line_number, i)
+
+    def draw_guide(self, line_number, indent_level):
+        bbox = self.editor.bbox(f"{line_number}.0 + {indent_level - 1} chars")
+        if bbox:
+            x = bbox[0]
+            y = bbox[1]
+            height = bbox[3] - bbox[1]
+            guide_frame = tk.Frame(self.editor, bg=self.indentation_guide_color, width=2, height=28)
+            guide_frame.place(x=(x-35), y=y)
+            self.indent_guides.append(guide_frame)
     def autoindent(self,event):
         word = self.editor.get("insert -1c wordstart","insert -1c wordend")
         line = self.editor.get("insert linestart","insert lineend")
