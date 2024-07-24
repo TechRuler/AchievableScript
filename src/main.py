@@ -400,7 +400,6 @@ class App(Window):
         self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.change_indent_color(self.selection)
-        self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         self.editor.editor.bind("<Shift-Return>",self.run_code)
     def add_editor_to_tab(self,file,name,image):
         self.editor = Editor(self.tab)
@@ -412,6 +411,7 @@ class App(Window):
         self.editor.line.changefont((self.font,self.font_size))
         self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
+        self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         self.file = file
 
         self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
