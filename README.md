@@ -1,6 +1,6 @@
-# Saurmandal
+# PossibleScript
 
-My-Editor is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
+PossibleScript is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
 
 # Preview
 ![code editor](https://github.com/user-attachments/assets/2b42cf69-dd5c-49ba-a463-27bab3d45646)
@@ -15,10 +15,10 @@ My-Editor is a Python code editor with integrated features for seamless coding a
 
 ## Technology Stack
 
-"My-Editor" is built using **Tkinter**, a Python library for creating graphical user interfaces. Tkinter provides a simple and efficient way to create desktop applications with Python.
+"PossibleScript" is built using **Tkinter**, a Python library for creating graphical user interfaces. Tkinter provides a simple and efficient way to create desktop applications with Python.
 
 # Contributing
-Contributions are welcome! If you want to contribute to My-Editor, fork the repository and submit a pull request.
+Contributions are welcome! If you want to contribute to PossibleScript, fork the repository and submit a pull request.
 
 ## Third-Party Libraries
 
