@@ -15,7 +15,7 @@ class App(Window):
         
         self.setGeometry(1400,800,200,100)
         
-        self.title("Editor")
+        self.title("PossibleScript")
         self.icon = PhotoImage(file="assets/logo/editor.png")
         self.app_icon(image=self.icon)
         self.var()
