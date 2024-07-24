@@ -3,7 +3,7 @@
 AchievableScript is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
 
 # Preview
-![code editor 2](https://github.com/user-attachments/assets/18aafe97-f28a-4e0a-9ba7-5fc56de3c238)
+![code editor 2](https://github.com/user-attachments/assets/31aa3073-5a13-419b-90f1-110a5d12bb6e)
 
 # Features
 
