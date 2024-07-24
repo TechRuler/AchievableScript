@@ -3,9 +3,10 @@
 My-Editor is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
 
 # Preview
-![code editor](https://github.com/user-attachments/assets/176fe333-522e-4dea-87b5-98e6c661bf74)
+![code editor](https://github.com/user-attachments/assets/2b42cf69-dd5c-49ba-a463-27bab3d45646)
 
 # Features
+
 - **Integrated Python Terminal:** Run and test Python code directly within the editor.
 - **Code Editing:** Edit code with syntax highlighting, autocomplete feature to increase codeing speed and other editing features.
 - **Sidebar for File Management:** Manage files and folders with a built-in sidebar.
