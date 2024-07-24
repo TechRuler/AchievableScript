@@ -1,6 +1,6 @@
-# PossibleScript
+# AchievableScript
 
-PossibleScript is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
+AchievableScript is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
 
 # Preview
 ![code editor 2](https://github.com/user-attachments/assets/18aafe97-f28a-4e0a-9ba7-5fc56de3c238)
@@ -15,10 +15,10 @@ PossibleScript is a Python code editor with integrated features for seamless cod
 
 ## Technology Stack
 
-"PossibleScript" is built using **Tkinter**, a Python library for creating graphical user interfaces. Tkinter provides a simple and efficient way to create desktop applications with Python.
+"AchievableScript" is built using **Tkinter**, a Python library for creating graphical user interfaces. Tkinter provides a simple and efficient way to create desktop applications with Python.
 
 # Contributing
-Contributions are welcome! If you want to contribute to PossibleScript, fork the repository and submit a pull request.
+Contributions are welcome! If you want to contribute to AchievableScript, fork the repository and submit a pull request.
 
 ## Third-Party Libraries
 
