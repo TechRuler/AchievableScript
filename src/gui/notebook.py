@@ -15,7 +15,7 @@ class NoteBook(tk.Frame):
         self.file_paths = {}  # Store file paths associated with frames
         self.selected_tab = None
         self.current_frame = None
-        self.master.master.title("PossibleScript")
+        self.master.master.title("AchievableScript")
         self.file = ""
     def config_colors(self, tab_bg, tab_fg, tab_bar_color, frame_color, selected_tab_color,line_color):
         self.original_color = tab_bg
@@ -95,7 +95,7 @@ class NoteBook(tk.Frame):
         self.change_tab_color(tab, self.selected_color)
 
         # Update window title with the file path
-        self.master.master.title(f"PossibleScript - {self.file_paths[self.current_frame]}")
+        self.master.master.title(f"AchievableScript - {self.file_paths[self.current_frame]}")
         self.file = self.file_paths[self.current_frame]
         self.selected_tab = tab 
 
@@ -129,7 +129,7 @@ class NoteBook(tk.Frame):
                         self.current_frame = self.frames[adjacent_tab]
                         self.current_frame.pack(expand=True, fill=tk.BOTH)
                         self.change_tab_color(adjacent_tab, self.selected_color)
-                        self.master.master.title(f"PossibleScript - {self.file_paths[self.current_frame]}")
+                        self.master.master.title(f"AchievableScript - {self.file_paths[self.current_frame]}")
                         self.file  = self.file_paths[self.current_frame]
                         self.selected_tab = adjacent_tab
             else:
