@@ -11,7 +11,11 @@ My-Editor is a Python code editor with integrated features for seamless coding a
 - **Code Editing:** Edit code with syntax highlighting, autocomplete feature to increase codeing speed and other editing features.
 - **Sidebar for File Management:** Manage files and folders with a built-in sidebar.
 - **File Operations:** Perform operations such as renaming, removing, and creating files and directories.
+-  **Modern UI**: Designed with a modern look and feel using Tkinter.
 
+## Technology Stack
+
+"My-Editor" is built using **Tkinter**, a Python library for creating graphical user interfaces. Tkinter provides a simple and efficient way to create desktop applications with Python.
 
 # Contributing
 Contributions are welcome! If you want to contribute to My-Editor, fork the repository and submit a pull request.
