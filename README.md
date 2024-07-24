@@ -1,4 +1,4 @@
-# My-Editor
+# Saurmandal
 
 My-Editor is a Python code editor with integrated features for seamless coding and file management. It provides a built-in terminal for executing Python code directly within the editor environment. The editor supports essential functionalities like file and folder operations, allowing users to manage, rename, remove, and create files and directories conveniently.
 
