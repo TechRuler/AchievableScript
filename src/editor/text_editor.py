@@ -5,6 +5,7 @@ from src.gui.scrollbar import AutoScrollbar
 from src.editor.autocomplete import Autocomplete
 from src.editor.syntax_highligter import SyntaxHighlighter
 from src.editor.minimap import TextPeer
+from src.api.bind_control import EventManager,EventAPI
 import re 
 class Editor(tk.Frame):
     def __init__(self,*arg,**kwarg):
@@ -44,8 +45,19 @@ class Editor(tk.Frame):
 
         self.rowconfigure(0,weight=1)
         self.columnconfigure(1,weight=1)
+        
+        event_manager = EventManager(default_interval=0.1,mode='throttle')
+        # self.auto_complete.on_key_release()
+        # self.__refresh_line_number()
+        # self.draw_indentation_guides()
+        event_api = EventAPI(event_manager)
+        event_api.add_function(self.auto_complete.on_key_release,0.2)
+        event_api.add_function(lambda event=None:self.after(2,self.line.redraw),0.1)
+        event_api.add_function(lambda event=None:self.draw_indentation_guides(),priority=True)
 
-        self.editor.bind("<KeyRelease>",lambda event=None:self.start_autocomplet())
+        event_api.bind_event(self.editor,"<KeyRelease>")
+
+        # self.editor.bind("<KeyRelease>",lambda event=None:self.start_autocomplet())
         self.editor.bind("<Key>",lambda event=None:self.CurrentLineHighlight(widget=self.editor,delay=10))
         self.editor.bind("<Button-1>",lambda event=None:self.button_1_binding())
         self.editor.bind("<Double-Button-1>",lambda event=None:self.__forget_line_color())
