@@ -118,7 +118,7 @@ class Editor(tk.Frame):
     def start_autocomplet(self):
         self.auto_complete.on_key_release()
         self.__refresh_line_number()
-        self.draw_indentation_guides()
+        # self.draw_indentation_guides()
     def button_1_binding(self):
         self.__refresh_line_number()
         self.CurrentLineHighlight(widget=self.editor,delay=10)
@@ -129,8 +129,9 @@ class Editor(tk.Frame):
 
     def __refresh_line_number(self):
         self.after(2,self.line.redraw)
+        # self.draw_indentation_guides()
         
-        # self.editor.after(1, self.draw_indentation_guides)
+        self.editor.after(1, self.draw_indentation_guides)
 
     def on_key_release(self, event=None):
         self.draw_indentation_guides()
