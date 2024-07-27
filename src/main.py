@@ -1,8 +1,11 @@
 from src.gui.window import Window
-from src.File_Exploeror.exploerer import FileManager
+from src.editor_components.File_Exploeror.exploerer import FileManager
 from src.gui.notebook import NoteBook
-from src.editor.text_editor import Editor
-from src.terminal.pythonshell import PythonShell
+from src.editor_components.editor.text_editor import Editor
+from src.editor_components.terminal.pythonshell import PythonShell
+from src.editor_components.menubar.menu_bar import MenuBar
+from src.editor_components.menubar.menu import MyMenu
+from src.editor_components.menubar.popmenu import PopMenu
 from tkinter import*
 from tkinter import ttk
 from tkinter.filedialog import*
@@ -75,7 +78,7 @@ class App(Window):
         self.line_number_width = 55
         self.pop_up_coordinates = 22
     def setup(self):
-        
+        self.Mainmenu = MenuBar(self,bg=self.app_background,fg=self.foreground,activebakground=self.selection,font=(self.font,12))
         
         
         self.add_configure(background=self.app_background,foreground=self.foreground,hover_minimise_button_color=self.selection,hover_resize_button_color=self.selection)
@@ -189,20 +192,20 @@ class App(Window):
         
 
 
-        Run = self.add_menu(text="▷",font=("Consolas",15),bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforegroun=self.foreground,command=lambda:self.run_code())
+        Run = Menubutton(master=self.Mainmenu.menu_bar,text="▷",font=("Consolas",15),bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforegroun=self.foreground) #command=lambda:self.run_code()
         Run.pack(side="right",fill="y",padx=(0,10))
 
+        Run.bind("<Button-1>",lambda event=None:self.run_code())
 
-        File = self.add_menu(text="File",bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforegroun=self.foreground,font=("Consolas",10))
-        File.pack(side="left",fill="y",padx=(5,5),pady=(5,5))
-        File_menu = Menu(File,tearoff=0,background=self.app_background,foreground=self.foreground,activebackground=self.currentline,activeforeground=self.foreground,selectcolor=self.selection,font=("Consolas",12))
-        File_menu.add_command(label="New Text File",command=self.new_file)
-        File_menu.add_command(label="New File")
-        File_menu.add_command(label="New Window")
+
+       
+        File_menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
+        File_menu.add_command(label="New Text File",shortcut="Ctrl+N",command=self.new_file)
+        File_menu.add_command(label="New File",shortcut="Ctrl+Alt+N")
+        File_menu.add_command(label="New Window",shortcut="Ctrl+T")
         File_menu.add_separator()
-        File_menu.add_command(label="Open File",command=self.open_file)
-        File_menu.add_command(label="Open Folder",command=lambda:self.explorer.open_folder(self.folder))
-        File_menu.add_command(label="Open Workspace from File")
+        File_menu.add_command(label="Open File",shortcut="Ctrl+O",command=self.open_file)
+        File_menu.add_command(label="Open Folder",shortcut="Ctrl+Alt+O",command=lambda:self.explorer.open_folder(self.folder))
         File_menu.add_command(label="Open Recent")
         File_menu.add_separator()
         File_menu.add_command(label="Add Folder to Workspace")
@@ -212,33 +215,37 @@ class App(Window):
         File_menu.add_command(label="Save File",command=self.saveas)
         File_menu.add_command(label="Save As File",command=self.saveas)
         File_menu.add_separator()
-        File_menu.add_command(label="Exit",command=self.destroy)
+        File_menu.add_command(label="Exit",command=self.close_app)
+        File_menu.initilize_menubar(menubar=self.Mainmenu)
 
-        File.config(menu=File_menu)
+        # Edit_menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
+        # Edit_menu.add_command(label="Undo")
 
-        Terminal = self.add_menu(text="Terminal",bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforegroun=self.foreground,font=("Consolas",10))
-        Terminal.pack(side="left",fill="y",padx=(5,5),pady=(5,5))
-        Terminal_Menu = Menu(Terminal,tearoff=0,background=self.app_background,foreground=self.foreground,activebackground=self.currentline,activeforeground=self.foreground,selectcolor=self.selection,font=("Consolas",12))
+        
+
+        
+        Terminal_Menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
         Terminal_Menu.add_command(label="Terminal",command=self.hide_terminal)
-        Terminal.config(menu=Terminal_Menu)
+        Terminal_Menu.initilize_menubar(menubar=self.Mainmenu)
 
-        TreeviewMenu = Menu(File,tearoff=0,background=self.app_background,foreground=self.foreground,activebackground=self.currentline,activeforeground=self.foreground,selectcolor=self.selection,font=("Consolas",12))
-        TreeviewMenu.add_command(label="Open to the slide",accelerator="Ctrl+Enter")
+        self.Mainmenu.add_cascade(menu=File_menu,text="File")
+        self.Mainmenu.add_cascade(menu=Terminal_Menu,text="Terminal")
+        
+        self.do_popup = PopMenu(master=self)
+        TreeviewMenu = self.do_popup.setmenu(bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforeground=self.foreground,font=("Consolas",12))
+        TreeviewMenu.add_command(label="Open to the slide")
         TreeviewMenu.add_command(label="Open with...")
         TreeviewMenu.add_command(label="Reveal in File Explorer")
         TreeviewMenu.add_command(label="Run File",command=lambda:self.run_code())
         TreeviewMenu.add_separator()
         TreeviewMenu.add_command(label="Rename",command=lambda:self.explorer.rename_item(self.background,self.foreground))
         TreeviewMenu.add_command(label="Delete",command=self.explorer.remove)
+        TreeviewMenu.initilize_menubar(menubar=None)
 
-        def do_popup1(event):
-            try:
-                TreeviewMenu.tk_popup(event.x_root, event.y_root)
-            finally:
-                TreeviewMenu.grab_release() 
+        
 
 
-        self.explorer.tree.added_one_more_command = do_popup1
+        self.explorer.tree.added_one_more_command = lambda event,j=TreeviewMenu:self.do_popup.show(j,event)
     def zoom_in(self):
         current_size = self.editor.editor.cget("font").split()[1]
         self.font_size = int(current_size) + 2  # Increase font size by 2 points
@@ -303,9 +310,7 @@ class App(Window):
         if self.panewindow_index.get() == -1:
             self.editor_frame.add(self.output_frame)
             self.panewindow_index.set(1)
-        else:
-             self.editor_frame.forget(self.output_frame)
-             self.panewindow_index.set(-1)
+        
         return "break"
     def new_file(self):
         self.file = ""

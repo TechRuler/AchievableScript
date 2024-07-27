@@ -45,7 +45,7 @@ class Window(tk.Tk):
 
         self.variables()
         self.setup_ui()
-        self.menubar()
+        # self.menubar()
         self.bindings()
 
         self.stop_event = threading.Event()
@@ -132,16 +132,16 @@ class Window(tk.Tk):
     def my_title(self,title="My Code Editor"):
         self.Title.config(text=title)
     title = my_title
-    def menubar(self):
-        self.menu_frame = tk.Frame(self)
-        self.menu_frame.pack(side="top",fill="x") 
-    def add_menu(self,text="",bg="white",fg="black",font=("Consolas",12),activebackground="tomato",activeforegroun="white",command=None):
-        menu = tk.Menubutton(self.menu_frame,text=text,background=bg,foreground=fg,font=font,activebackground=activebackground,activeforeground=activeforegroun,border=0)
-        # menu.pack(side="left",fill="y")
-        self.menu_frame.config(bg=bg)
-        if command:
-            menu.bind("<Button-1>",lambda event=None:command())
-        return menu
+    # def menubar(self):
+    #     self.menu_frame = tk.Frame(self)
+    #     self.menu_frame.pack(side="top",fill="x") 
+    # def add_menu(self,text="",bg="white",fg="black",font=("Consolas",12),activebackground="tomato",activeforegroun="white",command=None):
+    #     menu = tk.Menubutton(self.menu_frame,text=text,background=bg,foreground=fg,font=font,activebackground=activebackground,activeforeground=activeforegroun,border=0)
+    #     # menu.pack(side="left",fill="y")
+    #     self.menu_frame.config(bg=bg)
+    #     if command:
+    #         menu.bind("<Button-1>",lambda event=None:command())
+    #     return menu
     def add_configure(self,font=("Consolas",12),background="white",foreground="black",hover_resize_button_color="grey",hover_minimise_button_color="grey",hover_close_button_color="red"):
         self.Title.configure(font=font,bg=background,fg=foreground)
         self.titleBar.configure(bg=background)
