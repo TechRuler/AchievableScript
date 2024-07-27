@@ -218,8 +218,25 @@ class App(Window):
         File_menu.add_command(label="Exit",command=self.close_app)
         File_menu.initilize_menubar(menubar=self.Mainmenu)
 
-        # Edit_menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
-        # Edit_menu.add_command(label="Undo")
+        Edit_menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
+        Edit_menu.add_command(label="Undo",shortcut="Ctrl+Z")
+        Edit_menu.add_command(label="Redo",shortcut="Ctrl+Y")
+        Edit_menu.add_separator()
+        Edit_menu.add_command(label="Cut",shortcut="Ctrl+X")
+        Edit_menu.add_command(label="Copy",shortcut="Ctrl+C")
+        Edit_menu.add_command(label="Paste",shortcut="Ctrl+V")
+        Edit_menu.add_separator()
+        Edit_menu.add_command(label="Find",shortcut="Ctrl+F")
+        Edit_menu.add_command(label="Replace",shortcut="Ctrl+H")
+        Edit_menu.add_separator()
+        Edit_menu.add_command(label="Toggle Line Comment",shortcut="Ctrl+/")
+        Edit_menu.initilize_menubar(menubar=self.Mainmenu)
+
+        Help_menu = MyMenu(parent=self.Mainmenu,font=(self.font,12),bg=self.app_background,fg=self.foreground,activebackground=self.selection,activeforeground=self.foreground)
+        Help_menu.add_command(label="Document")
+        Help_menu.add_command(label="About")
+        Help_menu.initilize_menubar(menubar=self.Mainmenu)
+
 
         
 
@@ -229,7 +246,9 @@ class App(Window):
         Terminal_Menu.initilize_menubar(menubar=self.Mainmenu)
 
         self.Mainmenu.add_cascade(menu=File_menu,text="File")
+        self.Mainmenu.add_cascade(menu=Edit_menu,text="Edit")
         self.Mainmenu.add_cascade(menu=Terminal_Menu,text="Terminal")
+        self.Mainmenu.add_cascade(menu=Help_menu,text="Help")
         
         self.do_popup = PopMenu(master=self)
         TreeviewMenu = self.do_popup.setmenu(bg=self.app_background,fg=self.foreground,activebackground=self.currentline,activeforeground=self.foreground,font=("Consolas",12))
@@ -242,10 +261,15 @@ class App(Window):
         TreeviewMenu.add_command(label="Delete",command=self.explorer.remove)
         TreeviewMenu.initilize_menubar(menubar=None)
 
+        self.menu_list = [File_menu,Edit_menu,Terminal_Menu,Help_menu]
+
         
 
 
         self.explorer.tree.added_one_more_command = lambda event,j=TreeviewMenu:self.do_popup.show(j,event)
+    def hideing(self):
+        for i in self.menu_list:
+            i.menu.place_forget()
     def zoom_in(self):
         current_size = self.editor.editor.cget("font").split()[1]
         self.font_size = int(current_size) + 2  # Increase font size by 2 points

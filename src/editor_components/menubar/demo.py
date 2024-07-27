@@ -55,7 +55,7 @@ def main():
     menu_bar.add_cascade(menu=edit_menu, text="Edit")
 
     
-
+    file_menu.Binding()
     
 
     root.mainloop()

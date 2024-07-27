@@ -14,7 +14,6 @@ class MyMenu:
         self.select = None
         self.sub_menu = None
         self.menu = tk.Frame(self.master, bg=self.bg)
-
     def add_command(self, label="", shortcut="", command=None):
         """Adding commands to menu dropdown"""
         element = tk.Frame(self.menu,bg=self.bg,cursor="hand2")
@@ -34,12 +33,15 @@ class MyMenu:
             label.bind("<Button-1>", lambda event=None: self.run_command(command))
             shortcut_label.bind("<Button-1>", lambda event=None: self.run_command(command))
     def run_command(self,command):
+        self.hide()
+        command()
+    def hide(self):
         for i in self.menu_list:
             i.menu.place_forget()
         self.menu.place_forget()
         if self.bar is not None:
             self.bar.reset()
-        command()
+
     def initilize_menubar(self,menubar):
         self.bar = menubar
 
@@ -49,11 +51,11 @@ class MyMenu:
         separator.pack(side="top", fill="x", pady=2)
 
     def add_cascade(self, menu=None, label="",nested=None):
-        element = tk.Frame(self.menu,bg=self.bg,)
+        element = tk.Frame(self.menu,bg=self.bg,cursor="hand2")
         element.pack(side="top", fill="x")
-        label = tk.Label(element, text=label, anchor="w", bg=self.bg, fg=self.fg, font=self.font)
+        label = tk.Label(element, text=label, anchor="w", bg=self.bg, fg=self.fg, font=self.font,padx=20,cursor="hand2")
         label.pack(side="left")
-        shortcut_label = tk.Label(element, text=">", anchor="w", bg=self.bg, fg=self.fg, font=self.font)
+        shortcut_label = tk.Label(element, text=">", anchor="w", bg=self.bg, fg=self.fg, font=self.font,cursor="hand2")
         shortcut_label.pack(side="right")
         if nested is not None:
             self.menu_list += nested
@@ -67,10 +69,11 @@ class MyMenu:
         menu = self.menubutton_and_menu[element]
         if menu.winfo_ismapped():
             menu.place_forget()
+        self.__inner_reset(menu)
     
     def __open_menu_enter(self, element,width):
         """Open sub menu in menu dropdown"""
-       
+
         if self.sub_menu:
             self.sub_menu.place_forget()
             for child in self.sub_menu.winfo_children():
@@ -101,7 +104,7 @@ class MyMenu:
 
 
         new_menu = self.menubutton_and_menu[element]
-        # self.sub_menu = new_menu
+        self.sub_menu = new_menu
         if new_menu:
             self.menu.update_idletasks()
             adding_value = 0
@@ -146,5 +149,9 @@ class MyMenu:
             remain_elements.configure(bg=self.bg)
             for sub_element in remain_elements.winfo_children():
                 sub_element.configure(bg=self.bg,fg=self.fg)
-
+    def __inner_reset(self,menu):
+        for remain_elements in menu.winfo_children():
+            remain_elements.configure(bg=self.bg)
+            for sub_element in remain_elements.winfo_children():
+                sub_element.configure(bg=self.bg,fg=self.fg)
     

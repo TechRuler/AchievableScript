@@ -12,10 +12,10 @@ class PopMenu:
             if self.menu.winfo_ismapped():
                 self.menu.place_forget()
         self.menu = menu.menu
-        self.master.bind("<Button-1>",lambda event=None:self.hide())
+        self.master.bind("<Button-1>",lambda event=None:menu.hide())
         
         
         x,y = self.master.winfo_pointerx()-self.master.winfo_rootx(),self.master.winfo_pointery()-self.master.winfo_rooty()
         self.menu.place_configure(x=x,y=y)
-    def hide(self):
-        self.menu.place_forget()
+    # def hide(self):
+    #     self.menu.place_forget()
