@@ -428,7 +428,6 @@ class App(Window):
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
-        self.editor.change_indent_color(self.selection)
         self.editor.editor.bind("<Shift-Return>",self.run_code)
     def add_editor_to_tab(self,file,name,image):
         self.editor = Editor(self.tab)
@@ -441,6 +440,7 @@ class App(Window):
         self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
         self.editor.minimap.configure(bg=self.background,fg=self.foreground)
+        self.editor.change_indent_color(self.selection)
         self.file = file
 
         self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
