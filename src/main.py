@@ -280,6 +280,9 @@ class App(Window):
         self.editor.auto_complete.change_y(self.pop_up_coordinates)
         self.editor.line.configure(width=self.line_number_width)
         self.editor.line.changefont((self.font,self.font_size))
+        height = self.editor.indentation_guide_height + 4
+        position = self.editor.indentation_guide_position + 4
+        self.editor.change_indentation_guide_height_position(height=height,position=position)
     
     def zoom_out(self):
         current_size = self.editor.editor.cget("font").split()[1]
@@ -291,6 +294,9 @@ class App(Window):
         self.editor.auto_complete.change_y(self.pop_up_coordinates)
         self.editor.line.configure(width=self.line_number_width)
         self.editor.line.changefont((self.font,self.font_size))
+        height = self.editor.indentation_guide_height - 4
+        position = self.editor.indentation_guide_position - 4
+        self.editor.change_indentation_guide_height_position(height=height,position=position)
         
     def button_show(self):
         if self.folder:

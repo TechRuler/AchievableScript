@@ -12,6 +12,8 @@ class Editor(tk.Frame):
         tk.Frame.__init__(self,*arg,**kwarg)
         self.indent_guides = []
         self.indentation_guide_color = "spring green"
+        self.indentation_guide_height = 28
+        self.indentation_guide_position = 35
         self.style = ttk.Style()
        
         self.editor = tk.Text(self,font=("Consolas",15),wrap="none")
@@ -79,6 +81,9 @@ class Editor(tk.Frame):
         self.vertical_scrollbar.bind("<B1-Motion>",lambda event=None:self.__refresh_line_number())
         
         self.auto_complete.pop_up.add_command_for_element = self.add_by_click
+    def change_indentation_guide_height_position(self,height,position):
+        self.indentation_guide_height = height
+        self.indentation_guide_position = position
     def function_mouse_wheel(self):
         self.minimap.yview_moveto(self.editor.yview()[0])
         self.__refresh_line_number()
@@ -159,8 +164,8 @@ class Editor(tk.Frame):
             x = bbox[0]
             y = bbox[1]
             height = bbox[3] - bbox[1]
-            guide_frame = tk.Frame(self.editor, bg=self.indentation_guide_color, width=2, height=28)
-            guide_frame.place(x=(x-35), y=y)
+            guide_frame = tk.Frame(self.editor, bg=self.indentation_guide_color, width=2, height=self.indentation_guide_height)
+            guide_frame.place(x=(x-self.indentation_guide_position), y=y)
             self.indent_guides.append(guide_frame)
     def autoindent(self,event):
         word = self.editor.get("insert -1c wordstart","insert -1c wordend")
