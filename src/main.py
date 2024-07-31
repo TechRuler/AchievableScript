@@ -422,6 +422,33 @@ class App(Window):
                 
                 self.editor = self.add_editor_to_tab(file,name,self.explorer.image_text)
                 self.editor.editor.unbind("<KeyRelease>")
+            elif name.endswith(".html"):
+                # Check if tab already exists for this file
+                for existing_frame, associated_tab in self.tab.tabs.items():
+                    if self.tab.file_paths[existing_frame] == file:
+                        self.tab.tab_click(None, associated_tab)
+                        return
+                
+                self.editor = self.add_editor_to_tab(file,name,self.explorer.image_html)
+                self.editor.editor.unbind("<KeyRelease>")
+            elif name.endswith(".css"):
+                # Check if tab already exists for this file
+                for existing_frame, associated_tab in self.tab.tabs.items():
+                    if self.tab.file_paths[existing_frame] == file:
+                        self.tab.tab_click(None, associated_tab)
+                        return
+                
+                self.editor = self.add_editor_to_tab(file,name,self.explorer.image_css)
+                self.editor.editor.unbind("<KeyRelease>")
+            elif name.endswith(".js"):
+                # Check if tab already exists for this file
+                for existing_frame, associated_tab in self.tab.tabs.items():
+                    if self.tab.file_paths[existing_frame] == file:
+                        self.tab.tab_click(None, associated_tab)
+                        return
+                
+                self.editor = self.add_editor_to_tab(file,name,self.explorer.image_js)
+                self.editor.editor.unbind("<KeyRelease>")
             elif name.endswith(".png") or name.endswith(".jpg") or name.endswith(".PNG") or name.endswith(".JPG") or name.endswith(".jpeg") or name.endswith(".JPEG"):
                  # Check if tab already exists for this file
                 for existing_frame, associated_tab in self.tab.tabs.items():
