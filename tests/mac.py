@@ -3,32 +3,30 @@ from tkinter import ttk
 from src.editor_components.editor.Line_Number.line_number import LineNumber
 from src.gui.scrollbar import AutoScrollbar
 from src.editor_components.editor.Autocomplete.autocomplete import Autocomplete
+from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 from src.editor_components.editor.minimap.minimap import TextPeer
 from src.api.bind_control import EventManager, EventAPI
-from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 import re
 
-import keyword
-
 class Editor(tk.Frame):
-    def __init__(self, *arg, **kwarg):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-        tk.Frame.__init__(self, *arg, **kwarg)
-        
         self.indent_guides = []
-        #self.indentation_guide_color = "spring green"
+        self.indentation_guide_color = "spring green"
+        self.indentation_guide_height = 28
+        self.indentation_guide_position = 35
         self.style = ttk.Style()
 
-        self.editor = tk.Text(self, font=("Monaco", 15), wrap="none",background="#1E1E3F")
-        self.minimap = TextPeer(self.editor, font=("Monaco", 2), state="disable", wrap=None, border=0)
+        self.editor = tk.Text(self, font=("Consolas", 15), wrap="none")
+        self.minimap = TextPeer(self.editor, font=("Consolas", 2), state="disable", wrap=None, border=0)
 
         self.syntax = SyntaxHighlighter(master=self.editor)
-        self.syntax.configures()
         self.auto_complete = Autocomplete(master=self.editor)
 
         self.line = LineNumber(self, width=55)
         self.line.attach(self.editor)
-        self.line.changefont(("Monaco", 15))
+        self.line.changefont(("Consolas", 15))
 
         self.vertical_scrollbar = AutoScrollbar(self, orient="vertical", command=self.muliple_scroll)
         self.horizontal_scrollbar = AutoScrollbar(self, orient="horizontal", command=self.editor.xview)
@@ -45,6 +43,9 @@ class Editor(tk.Frame):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
+        self.bind_events()
+
+    def bind_events(self):
         self.editor.bind("<KeyRelease>", lambda event=None: self.start_autocomplet())
         self.editor.bind("<Key>", lambda event=None: self.CurrentLineHighlight(widget=self.editor, delay=10))
         self.editor.bind("<Button-1>", lambda event=None: self.button_1_binding())
@@ -65,7 +66,6 @@ class Editor(tk.Frame):
         self.editor.bind("<Tab>", lambda event=None: self.on_tab_click())
         self.editor.bind("<Control-m>", lambda event=None: self.do_comment())
         self.vertical_scrollbar.bind("<B1-Motion>", lambda event=None: self.__refresh_line_number())
-
         self.auto_complete.pop_up.add_command_for_element = self.add_by_click
 
     def function_mouse_wheel(self):
@@ -75,9 +75,6 @@ class Editor(tk.Frame):
     def muliple_scroll(self, *args):
         self.editor.yview(*args)
         self.minimap.yview(*args)
-
-    def change_indent_color(self, color):
-        self.indentation_guide_color = color 
 
     def add_by_click(self, event=None):
         if self.auto_complete.autocomplete_bool:
@@ -93,10 +90,13 @@ class Editor(tk.Frame):
     def scrollbar_configure(self, scrollbar="grey", scroll_bg="white", active_scrollbar="white"):
         self.style.layout("Vertical.TScrollbar",
                  [('Vertical.Scrollbar.trough', {'children': [('Vertical.Scrollbar.thumb', {'expand': '1', 'sticky': 'nswe'})], 'sticky': 'ns'})])
+
         self.style.layout("Horizontal.TScrollbar",
-                 [('Horizontal.Scrollbar.trough', {'children': [('Vertical.Scrollbar.thumb', {'expand': '1', 'sticky': 'nswe'})], 'sticky': 'ew'})])
+                 [('Horizontal.TScrollbar.trough', {'children': [('Vertical.Scrollbar.thumb', {'expand': '1', 'sticky': 'nswe'})], 'sticky': 'ew'})])
+
         self.style.configure("Vertical.TScrollbar", background=scrollbar, bordercolor=scroll_bg, darkcolor=scrollbar, lightcolor=scrollbar, troughcolor=scroll_bg, arrowcolor=scroll_bg, gripcount=0)
         self.style.map("Vertical.TScrollbar", background=[('active', active_scrollbar)])
+
         self.style.configure("Horizontal.TScrollbar", background=scrollbar, bordercolor=scroll_bg, darkcolor=scroll_bg, lightcolor=scroll_bg, troughcolor=scroll_bg, arrowcolor=scroll_bg, gripcount=0)
         self.style.map("Horizontal.TScrollbar", background=[('active', active_scrollbar)])
 
@@ -110,122 +110,143 @@ class Editor(tk.Frame):
 
     def button_1_binding(self):
         self.__refresh_line_number()
+        self.CurrentLineHighlight(widget=self.editor, delay=10)
         self.auto_complete.hide_autocomplete()
         self.auto_complete.hide_calltip()
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
-
-    def __refresh_line_number(self):
-        self.line.redraw()
-        self.__forget_line_color()
-        self.__indent_guide()
-
-    def __indent_guide(self):
-        for item in self.indent_guides:
-            self.editor.tag_delete(item)
-        self.indent_guides.clear()
-        for index in range(1, int(self.editor.index('end-1c').split('.')[0]) + 1):
-            line = self.editor.get(f"{index}.0", f"{index}.end")
-            space_number = re.search(r'(\s+)', line)
-            if space_number is not None:
-                space_number = space_number.span()[1]
-                self.draw_guide(index, space_number)
-            else:
-                pass
-
-    def draw_guide(self, index, indent_number):
-        for count in range(1, indent_number + 1):
-            if count % 4 == 0:
-                tag_name = f"indent_{index}_{count // 4}"
-                self.editor.tag_configure(tag_name, foreground=self.indentation_guide_color)
-                self.editor.tag_add(tag_name, f"{index}.{count - 1}", f"{index}.{count}")
-                self.indent_guides.append(tag_name)
 
     def __forget_line_color(self):
-        self.editor.tag_delete("CurrentLine")
+        self.editor.tag_remove("CurrentLine", "1.0", "end")
+
+    def __refresh_line_number(self):
+        self.after(2, self.line.redraw)
+        self.editor.after(1, self.draw_indentation_guides)
+
+    def on_key_release(self, event=None):
+        self.draw_indentation_guides()
+
+    def on_scroll(self, event=None):
+        self.editor.after(1, self.draw_indentation_guides)
+
+    def draw_indentation_guides(self):
+        for guide in self.indent_guides:
+            guide.destroy()
+        self.indent_guides.clear()
+
+        lines = self.editor.get("1.0", "end-1c").split('\n')
+        for line_number, line_text in enumerate(lines, start=1):
+            match = re.match(r"^(\s+)", line_text)
+            if match:
+                indent_level = len(match.group(0))
+                for i in range(4, indent_level + 1, 4):
+                    self.draw_guide(line_number, i)
+
+    def draw_guide(self, line_number, indent_level):
+        bbox = self.editor.bbox(f"{line_number}.0 + {indent_level - 1} chars")
+        if bbox:
+            x = bbox[0]
+            y = bbox[1]
+            height = bbox[3] - bbox[1]
+            guide_frame = tk.Frame(self.editor, bg=self.indentation_guide_color, width=2, height=self.indentation_guide_height)
+            guide_frame.place(x=(x-self.indentation_guide_position), y=y)
+            self.indent_guides.append(guide_frame)
 
     def autoindent(self, event):
-        current_line = self.editor.get("insert linestart", "insert")
-        indent_match = re.match(r"^(\s+)", current_line)
-        if indent_match:
-            indent = indent_match.group(1)
-            self.editor.insert("insert", "\n" + indent)
+        word = self.editor.get("insert -1c wordstart", "insert -1c wordend")
+        line = self.editor.get("insert linestart", "insert lineend")
+        match = re.match(r'^(\s+)', line)
+        if word == ":":
+            current_indent = len(match.group(0)) if match else 0
+            new_indent = current_indent + 4
+            self.editor.insert("insert", event.char + "\n" + " " * new_indent)
+            self.CurrentLineHighlight(widget=self.editor, delay=10)
+            self.__refresh_line_number()
+        elif self.auto_complete.autocomplete_bool:
+            self.auto_complete.add_option_to_master()
+            self.CurrentLineHighlight(widget=self.editor, delay=10)
+            self.__refresh_line_number()
         else:
-            self.editor.insert("insert", "\n")
-        self.__refresh_line_number()
+            whitespace = match.group(0) if match else ""
+            self.editor.insert("insert", f"\n{whitespace}")
+            self.CurrentLineHighlight(widget=self.editor, delay=10)
+            self.__refresh_line_number()
+        self.editor.see("insert")
         return "break"
 
-    def Enter_(self, event):
-        try:
-            word = self.auto_complete.autocomplete_word.strip()
-            index = self.auto_complete.list_var.index(word)
-        except:
-            pass
-        self.auto_complete.add_option_to_master()
-        self.__refresh_line_number()
-        index = self.editor.index("insert")
-        index2 = "%s+1c" % index
-        self.editor.tag_add("sel", index, index2)
-        self.editor.mark_set("insert", index2)
-        self.editor.see("insert")
-        self.auto_complete.hide_autocomplete()
-        self.auto_complete.hide_calltip()
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
+    def Enter_(self, event=None):
+        index = self.editor.index(tk.INSERT)
+        index2 = "%s-%sc" % (index, 1)
+        word = self.editor.get(index2, index)
+        line = self.editor.get("insert linestart", "insert lineend")
+
+        match = re.match(r'^(\s+)', line)
+
+        if word == ":":
+            current_indent = len(match.group(0)) if match else 0
+            new_indent = current_indent + 4
+
+            self.editor.insert("insert", event.char + "\n" + " " * new_indent)
+
+        elif self.auto_complete.autocomplete_bool:
+            self.auto_complete.add_option_to_master()
+
+        else:
+            whitespace = match.group(0) if match else ""
+            self.editor.insert("insert", f"\n{whitespace}")
         return "break"
+
+    def CurrentLineHighlight(self, widget, delay):
+        def delayedHighlight():
+            widget.tag_remove("CurrentLine", "1.0", "end")
+            widget.tag_add("CurrentLine", "insert linestart", "insert lineend +1c")
+            widget.tag_lower("CurrentLine")
+
+        widget.after(delay, delayedHighlight)
 
     def backspace(self):
-        self.auto_complete.on_key_backspace()
+        current_index = self.editor.index(tk.INSERT)
+        line_start_index = self.editor.index(f"{current_index} linestart")
+        line_end_index = self.editor.index(f"{current_index} lineend")
+
+        line_text = self.editor.get(line_start_index, line_end_index)
+
+        spaces_to_remove = len(line_text) % 4
+        if line_text and line_text.isspace():
+            for _ in range(spaces_to_remove):
+                self.editor.delete(f"{line_end_index} -1c")
+        else:
+            self.editor.delete(f"{line_end_index} -1c")
         self.__refresh_line_number()
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
+        self.draw_indentation_guides()
 
     def autocomplete_brackets(self, bracket):
-        pos = self.editor.index("insert")
-        if bracket == "(":
-            self.editor.insert(pos, "()")
-        elif bracket == ")":
-            pass
-        elif bracket == "[":
-            self.editor.insert(pos, "[]")
-        elif bracket == "]":
-            pass
-        elif bracket == "{":
-            self.editor.insert(pos, "{}")
-        elif bracket == "}":
-            pass
-        self.editor.mark_set("insert", f"{pos}+1c")
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
-        return "break"
+        brackets = {'(': ')', '{': '}', '[': ']', ')': '', '}': '', ']': ''}
+        self.editor.insert("insert", bracket)
+        if brackets[bracket]:
+            self.editor.insert("insert", brackets[bracket])
+            self.editor.mark_set("insert", f"insert -1c")
+        self.__refresh_line_number()
 
     def autocomplete_strings(self, symbol):
-        pos = self.editor.index("insert")
-        self.editor.insert(pos, symbol * 2)
-        self.editor.mark_set("insert", f"{pos}+1c")
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
-        return "break"
+        symbol1 = {"'": "'", '"': '"'}
+        self.editor.insert("insert", symbol)
+        self.editor.insert("insert", symbol1[symbol])
+        self.editor.mark_set("insert", f"insert -1c")
+        self.__refresh_line_number()
 
     def on_tab_click(self):
         self.editor.insert("insert", " " * 4)
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
-        self.__refresh_line_number()
         return "break"
 
     def do_comment(self):
-        line_start = self.editor.index("insert linestart")
-        line_end = self.editor.index("insert lineend")
-        line_content = self.editor.get(line_start, line_end)
-        if line_content.lstrip().startswith("#"):
-            new_content = line_content.lstrip("#").strip()
-        else:
-            new_content = "# " + line_content
-        self.editor.delete(line_start, line_end)
-        self.editor.insert(line_start, new_content)
-        self.CurrentLineHighlight(widget=self.editor, delay=10)
-        self.__refresh_line_number()
-        return "break"
+        index = self.editor.index(tk.INSERT)
+        line_start_index = self.editor.index(f"{index} linestart")
+        line_end_index = self.editor.index(f"{index} lineend")
+        text = self.editor.get(line_start_index, line_end_index)
+        if text:
+            commented_text = f"# {text}"
+            self.editor.delete(line_start_index, line_end_index)
+            self.editor.insert(line_start_index, commented_text)
 
-    def CurrentLineHighlight(self, widget, delay=10):
-        widget.tag_remove("CurrentLine", "1.0", "end")
-        widget.tag_add("CurrentLine", "insert linestart", "insert lineend +1c")
-        widget.after(delay, lambda: widget.tag_remove("CurrentLine", "1.0", "end"))
 
 if __name__ == "__main__":
     root = tk.Tk()
