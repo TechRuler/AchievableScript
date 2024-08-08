@@ -76,6 +76,10 @@ class Window(tk.Tk):
         self.WS_EX_APPWINDOW = 0x00400000
         self.WS_EX_TOOLWINDOW = 0x00000080
         self.hasstyle = False
+    def get_app_height(self):
+        return self.app_height
+    def get_app_width(self):
+        return self.app_width
     def on_resizing(self,event):
         if not self.size:
             self.window_resizings(event)

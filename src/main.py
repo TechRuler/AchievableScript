@@ -6,6 +6,8 @@ from src.editor_components.terminal.pythonshell import PythonShell
 from src.editor_components.menubar.menu_bar import MenuBar
 from src.editor_components.menubar.menu import MyMenu
 from src.editor_components.menubar.popmenu import PopMenu
+from src.themes.Theme import Theme
+from src.comand_palette.command_palette_gui import Palette
 from tkinter import*
 from tkinter import ttk
 from tkinter.filedialog import*
@@ -78,6 +80,9 @@ class App(Window):
         self.line_number_width = 55
         self.pop_up_coordinates = 22
     def setup(self):
+        self.my_style = Theme()
+        self.my_style.set_theme()
+        self.my_style.buttons(font=self.font,bg=self.app_background,fg=self.foreground,activebackgrround=self.selection,activeforeground='white',bordercolor=self.background)
         self.Mainmenu = MenuBar(self,bg=self.app_background,fg=self.foreground,activebakground=self.selection,font=(self.font,12))
         
         
@@ -94,7 +99,7 @@ class App(Window):
         self.explorer.tree.color_config(default_bgcolor=self.app_background,default_fgcolor=self.foreground,selected_bgcolor=self.background,selected_fgcolor=self.foreground,hover_bgcolor=self.currentline,font_size=10)
         # self.explorer.pack(side="left",fill="y")
         self.explorer.pack_propagate(0)
-        self.explorer.configures(background=self.app_background,foreground=self.foreground,selected_bg=self.currentline,selected_fg=self.foreground,border_color=self.selection)
+        self.my_style.tree_configures(background=self.app_background,foreground=self.foreground,selected_bg=self.currentline,selected_fg=self.foreground,border_color=self.selection)
         self.explorer.config(bg=self.app_background)
         self.explorer.root_node_frame.config(bg=self.background)
         self.explorer.root_node.config(bg=self.background,fg=self.foreground,font=("Consolas",12,"bold"),)
@@ -129,7 +134,7 @@ class App(Window):
         self.editor = Editor(self.tab)
         self.editor.editor.configure(font=(self.font,self.font_size),bg=self.background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground,undo=True)
         self.editor.line.configure(bg=self.background,border=0)
-        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
+        self.my_style.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14),toggle_color=self.currentline)
@@ -261,12 +266,25 @@ class App(Window):
         TreeviewMenu.add_command(label="Delete",command=self.explorer.remove)
         TreeviewMenu.initilize_menubar(menubar=None)
 
+        self.palette_adding_interace()
+
         self.menu_list = [File_menu,Edit_menu,Terminal_Menu,Help_menu]
 
         
 
 
         self.explorer.tree.added_one_more_command = lambda event,j=TreeviewMenu:self.do_popup.show(j,event)
+        
+
+    def palette_adding_interace(self):
+        width = self.get_app_width()
+        adjust = width/2
+        print(width)
+        print(adjust)
+        self.my_palette = Palette(self.Mainmenu.menu_bar,bg=self.currentline)
+        self.my_palette.palette_button.config(bg=self.app_background,fg=self.foreground,font=self.font,activebackground=self.selection,activeforeground='white')
+        self.my_palette.set_hover_color(hover_color=self.selection,normal_color=self.app_background)
+        self.my_palette.pack(side='left',expand=True)
     def hideing(self):
         for i in self.menu_list:
             i.menu.place_forget()
@@ -470,7 +488,7 @@ class App(Window):
         self.editor.line.configure(bg=self.background,border=0)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
-        self.editor.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
+        self.my_style.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
         self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         self.editor.change_indent_color(self.selection)

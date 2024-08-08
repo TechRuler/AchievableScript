@@ -44,8 +44,6 @@ class FileManager(tk.Frame):
         self.root_node_declaring_file.config(image=self.image_file)
         self.root_node_declaring_folder.config(image=self.image_folder)
         self.task()
-        self.style = ttk.Style()
-        self.style.theme_use("clam")
         # print(self.style.theme_names())
         self.Binding()
     def task(self):
@@ -63,9 +61,7 @@ class FileManager(tk.Frame):
         self.root_node_file_entry.bind("<KeyRelease>",lambda event=None:self.change_image(self.root_node_file_entry,self.root_node_declaring_file))
         self.root_node_folder_entry.bind("<Return>",lambda event=None:self.create_folder())
         
-    def configures(self,background="white",foreground="black",fon=("Consolas",9),selected_bg="grey",selected_fg="white",border_color="white"):
-        self.style.configure("Treeview",background=background,foreground=foreground,fieldbackground=background,bordercolor=border_color,highlightthickness=0, padding=0)
-        self.style.map("Treeview",background=[("selected",selected_bg)],foreground=[("selected",selected_fg)])
+    
     def root_node_bind(self,normal="grey15",hover="grey"):
         self.root_node_add_file.bind("<Enter>",lambda event=None:self.highlight(self.root_node_add_file,hover))
         self.root_node_add_file.bind("<Leave>",lambda event=None:self.highlight(self.root_node_add_file,normal))
