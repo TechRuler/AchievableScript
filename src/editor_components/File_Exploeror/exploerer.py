@@ -203,7 +203,7 @@ class FileManager(tk.Frame):
             self.root_node_add_reload.pack_forget()
             self.root_node_add_folder.pack_forget()
             self.root_node_add_file.pack_forget()
-    def open_folder(self,folder):
+    def open_folder(self,folder,palette):
         self.folder = folder
         self.tree.delete()
         self.folder = askdirectory()
@@ -215,6 +215,7 @@ class FileManager(tk.Frame):
             self.process_directory("",abspath,level=0)
             
             self.command()
+            palette.palette_button.config(text=name)
             
 
             

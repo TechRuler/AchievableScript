@@ -43,6 +43,16 @@ class App(Window):
         self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
         self.editor.editor.bind("<Control-minus>",lambda event=None:self.zoom_out())
         self.editor.editor.bind("<Shift-Return>",self.run_code)
+        self.bind('<Button-1>',self.remove_menus)
+    def remove_menus(self, event):
+        # Check if the event source is one of the excluded widgets
+        if event.widget in self.Mainmenu.menu_bar.winfo_children() or event.widget == self.Mainmenu.menu_bar:
+            print("Clicked inside excluded frame or button. Ignoring.")
+            return
+        for i in self.menu_list:
+            i.hide()
+
+        print("Clicked outside the excluded frame.")
        
         
     def var(self):
@@ -282,8 +292,8 @@ class App(Window):
         print(width)
         print(adjust)
         self.my_palette = Palette(self.Mainmenu.menu_bar,bg=self.currentline)
-        self.my_palette.palette_button.config(bg=self.app_background,fg=self.foreground,font=self.font,activebackground=self.selection,activeforeground='white')
-        self.my_palette.set_hover_color(hover_color=self.selection,normal_color=self.app_background)
+        self.my_palette.palette_button.config(bg=self.background,fg=self.foreground,font=self.font,activebackground=self.selection,activeforeground='white')
+        self.my_palette.set_hover_color(hover_color=self.selection,normal_color=self.background)
         self.my_palette.pack(side='left',expand=True)
     def hideing(self):
         for i in self.menu_list:
@@ -525,7 +535,7 @@ class App(Window):
         if event.keysym.lower() == 'o' and self.ctrl_pressed and self.alt_pressed:
             index = "%s-%sc"%("insert",1)
             self.editor.editor.delete(index,"insert")
-            self.explorer.open_folder(self.folder)
+            self.explorer.open_folder(self.folder,self.my_palette)
             self.ctrl_pressed = False
             self.alt_pressed = False
            

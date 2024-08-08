@@ -54,8 +54,20 @@ def main():
     menu_bar.add_cascade(menu=file_menu, text="File")
     menu_bar.add_cascade(menu=edit_menu, text="Edit")
 
-    
-    file_menu.Binding()
+    def on_click(event):
+        # Check if the event source is one of the excluded widgets
+        if event.widget in menu_bar.menu_bar.winfo_children() or event.widget == menu_bar.menu_bar:
+            print("Clicked inside excluded frame or button. Ignoring.")
+            return
+        file_menu.hide()
+        edit_menu.hide()
+        theme_menu.hide()
+        new_theme.hide()
+
+        print("Clicked outside the excluded frame.")
+
+    # file_menu.Binding()
+    root.bind('<Button-1>',on_click)
     
 
     root.mainloop()
