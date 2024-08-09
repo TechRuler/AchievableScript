@@ -4,7 +4,7 @@ from src.gui.scrollbar import AutoScrollbar
 from src.editor_components.editor.Autocomplete.custom_listbox import PopUp
 from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 class Autocomplete(tk.Frame):
-    def __init__(self, master, *arg, **kwarg):
+    def __init__(self, master,*arg, **kwarg):
         tk.Frame.__init__(self, master, *arg, **kwarg)
         self.master = master
         
@@ -87,7 +87,7 @@ class Autocomplete(tk.Frame):
             return
 
         new_suggestion = len(data)
-        print(data)
+        # print(data)
         height = min(new_suggestion * 35, 200)
 
         self.pop_up.place_configure(x=x, y=(y + self.pop_up_y), height=height, width=300)
