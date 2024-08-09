@@ -47,10 +47,12 @@ class App(Window):
     def remove_menus(self, event):
         # Check if the event source is one of the excluded widgets
         if event.widget in self.Mainmenu.menu_bar.winfo_children() or event.widget == self.Mainmenu.menu_bar:
+            self.my_palette.hide_palette()
             print("Clicked inside excluded frame or button. Ignoring.")
             return
         for i in self.menu_list:
             i.hide()
+        self.my_palette.hide_palette()
 
         print("Clicked outside the excluded frame.")
        
@@ -156,6 +158,8 @@ class App(Window):
         
         self.editor.change_indent_color(self.selection)
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
+        self.editor.auto_complete.syntax1.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
+        self.editor.auto_complete.syntax2.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         
 
         self.tab.add_tab(frame=self.editor,text="Untitled")
@@ -295,6 +299,12 @@ class App(Window):
         self.my_palette.palette_button.config(bg=self.background,fg=self.foreground,font=self.font,activebackground=self.selection,activeforeground='white')
         self.my_palette.set_hover_color(hover_color=self.selection,normal_color=self.background)
         self.my_palette.pack(side='left',expand=True)
+
+        # self.my_palette.palette_top.config(bg=self.background)
+        self.my_palette.palette_entry.config(bg=self.background,fg=self.foreground,insertbackground=self.foreground,font=(self.font,self.font_size))
+        self.my_palette.palette_list.configure(bg=self.app_background,fg=self.foreground,font=(self.font,self.font_size),selectbackground=self.selection,selectforeground='white',toggle_color=self.currentline)
+        self.my_palette.palette_list.config(bg=self.app_background)
+        
     def hideing(self):
         for i in self.menu_list:
             i.menu.place_forget()
@@ -489,6 +499,9 @@ class App(Window):
         self.editor.syntax.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         self.editor.auto_complete.calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
         self.editor.auto_complete.detail_calltip_label.config(bg=self.app_background,fg=self.foreground,font=("Consolas",10))
+        self.editor.auto_complete.syntax1.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
+        self.editor.auto_complete.syntax2.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
+        
         self.editor.editor.bind("<Shift-Return>",self.run_code)
     def add_editor_to_tab(self,file,name,image):
         self.editor = Editor(self.tab)

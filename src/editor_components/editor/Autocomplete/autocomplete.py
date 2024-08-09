@@ -1,80 +1,8 @@
 import tkinter as tk
 import jedi 
 from src.gui.scrollbar import AutoScrollbar
-
-class PopUp(tk.Frame):
-    def __init__(self,*arg,**kwarg):
-        tk.Frame.__init__(self,*arg,*kwarg)
-        self.element_list = []
-        self.toggle_color = "tomato"
-        self.select_bgcolor = "grey"
-        self.select_fgcolor = "white"
-        self.default_bg = "grey15"
-        self.default_fg = "white"
-        self.add_command_for_element = None
-        self.font = ("Consolas",10)
-        self.select_element = None
-        self.select_index = None
-        self.config(cursor="hand2")
-    def insert(self,text="",image=""):
-        element = tk.Label(self,text=text,image=image,anchor="w",compound="left",bg=self.default_bg,fg=self.default_fg,font=self.font)
-        element.pack(side="top",fill="x")
-        element.bind("<Button-1>",lambda event=None,i=element:self.selection(i))
-        element.bind("<Enter>",lambda event=None, i=element:self.hightlight_enter(i))
-        element.bind("<Leave>",lambda event=None, i=element:self.hightlight_leave(i))
-        self.element_list.append(element)
-    
-    
-    def selection_get(self):
-        text = self.select_element.cget("text")
-        return text
-    def delete(self):
-        for i in self.element_list:
-            i.pack_forget()
-        self.element_list.clear()
-    def select_set(self,index):
-        for i,element in enumerate(self.element_list):
-            if i == index:
-                self.select(element)
-    def selection(self,element):
-        if self.select_element!=element:
-            self.deselect(self.select_element)
-
-        self.select(element)
-        self.add_command_for_element()
-            
-
-    def hightlight_enter(self,element):
-        if self.select_element != element:
-            element.config(bg=self.toggle_color,fg=self.default_fg)
-
-    def hightlight_leave(self,element):
-        if self.select_element != element:
-            element.config(bg=self.default_bg,fg=self.default_fg)
-                
-    def select(self,element):
-        for i,_ in enumerate(self.element_list):
-            if _ == element:
-                self.select_index = i
-        self.select_element = element
-        element.config(bg=self.select_bgcolor,fg=self.select_fgcolor)
-
-    def deselect(self,element):
-        self.select_element = None
-        self.select_index = None
-        element.config(bg=self.default_bg,fg=self.default_fg)
-    def configure(self,bg=None,fg=None,selectbackground=None,selectforeground=None,font=None,toggle_color=None):
-        self.default_bg = bg 
-        self.default_fg = fg 
-        self.select_bgcolor = selectbackground
-        self.select_fgcolor = selectforeground
-        self.toggle_color = toggle_color
-        self.font = font
-        for element in self.element_list:
-            element.config(bg=self.default_bg,fg=self.default_fg,font=self.font)
-        
-
-
+from src.editor_components.editor.Autocomplete.custom_listbox import PopUp
+from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 class Autocomplete(tk.Frame):
     def __init__(self, master, *arg, **kwarg):
         tk.Frame.__init__(self, master, *arg, **kwarg)
@@ -112,6 +40,10 @@ class Autocomplete(tk.Frame):
         self.rowconfigure(0,weight=1)
         self.columnconfigure(0,weight=1)
 
+
+        self.syntax1 = SyntaxHighlighter(master=self.calltip_label)
+        self.syntax2 = SyntaxHighlighter(master=self.detail_calltip_label)
+
     def change_y(self, y):
         self.pop_up_y = y
 
@@ -141,30 +73,30 @@ class Autocomplete(tk.Frame):
         bbox = self.master.bbox("insert")
         if bbox:
             x, y, _, _ = bbox
-        if line_text.strip() == "" or line_text.lstrip().startswith("#"):
+
+        # Check the character before the cursor position
+        char_before = self.master.get("insert -1c", "insert")
+
+        if line_text.strip() == "" or line_text.lstrip().startswith("#") or char_before in "()[]{} ":
             self.hide_autocomplete()
-        else:
-            data = [i.name for i in completions]
-            new_suggestion = len(data)
+            return
 
-            if new_suggestion > 10:
-                height = 185
-            elif word == data[0]:
-                self.hide_autocomplete()
-            else:
-                height = new_suggestion * 20
+        data = [i.name for i in completions ]
+        if not data:
+            self.hide_autocomplete()
+            return
 
-            if new_suggestion > 0:
-                self.pop_up.place_configure(x=x, y=(y + self.pop_up_y), height=height, width=300)
-                self.autocomplete_bool = True
-                self.pop_up.delete()
-                for i in data:
-                    self.pop_up.insert(text=i)
-                self.pop_up.select_set(0)
-                self.update_detail_calltip()
-                
-            else:
-                self.hide_autocomplete()
+        new_suggestion = len(data)
+        print(data)
+        height = min(new_suggestion * 35, 200)
+
+        self.pop_up.place_configure(x=x, y=(y + self.pop_up_y), height=height, width=300)
+        self.autocomplete_bool = True
+        self.pop_up.delete()
+        for i in data:
+            self.pop_up.insert(text=i)
+        self.pop_up.select_set(0)
+        self.update_detail_calltip()
 
     def hide_autocomplete(self, event=None):
         self.pop_up.place_forget()
