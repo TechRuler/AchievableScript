@@ -1,7 +1,7 @@
 import tkinter as tk 
 from tkinter import ttk
 from src.editor_components.editor.Line_Number.line_number import LineNumber
-from src.gui.scrollbar import AutoScrollbar
+from src.widgets.scrollbar import AutoScrollbar
 from src.editor_components.editor.Autocomplete.autocomplete import Autocomplete
 from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 from src.editor_components.editor.minimap.minimap import TextPeer
@@ -12,8 +12,8 @@ class Editor(tk.Frame):
         tk.Frame.__init__(self,*arg,**kwarg)
         self.indent_guides = []
         self.indentation_guide_color = "spring green"
-        self.indentation_guide_height = 28
-        self.indentation_guide_position = 35
+        # self.indentation_guide_height = 28
+        # self.indentation_guide_position = 35
         self.style = ttk.Style()
        
         self.editor = tk.Text(self,font=("Consolas",15),wrap="none")

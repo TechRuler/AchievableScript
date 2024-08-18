@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from src.editor_components.editor.Line_Number.line_number import LineNumber
-from src.gui.scrollbar import AutoScrollbar
+from src.widgets.scrollbar import AutoScrollbar
 from src.editor_components.editor.Autocomplete.autocomplete import Autocomplete
 from src.editor_components.editor.minimap.minimap import TextPeer
 from src.api.bind_control import EventManager, EventAPI

@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.filedialog import*
 import os 
-from src.gui.Treeview import TreeView
+from src.widgets.Treeview import TreeView
 import shutil
 
 

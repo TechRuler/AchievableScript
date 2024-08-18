@@ -1,6 +1,6 @@
 import tkinter as tk 
 from tkinter import ttk
-from src.gui.scrollbar import AutoScrollbar
+from src.widgets.scrollbar import AutoScrollbar
 class PopUp(tk.Frame):
     def __init__(self,*arg,**kwarg):
         tk.Frame.__init__(self,*arg,*kwarg)

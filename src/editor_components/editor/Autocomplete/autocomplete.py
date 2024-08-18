@@ -1,6 +1,6 @@
 import tkinter as tk
 import jedi 
-from src.gui.scrollbar import AutoScrollbar
+from src.widgets.scrollbar import AutoScrollbar
 from src.editor_components.editor.Autocomplete.custom_listbox import PopUp
 from src.editor_components.editor.syntax_highlighter.syntax_highligter import SyntaxHighlighter
 class Autocomplete(tk.Frame):

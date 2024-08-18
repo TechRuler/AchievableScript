@@ -1,6 +1,6 @@
-from src.gui.window import Window
+from src.widgets.window import Window
 from src.editor_components.File_Exploeror.exploerer import FileManager
-from src.gui.notebook import NoteBook
+from src.widgets.notebook import NoteBook
 from src.editor_components.editor.text_editor import Editor
 from src.editor_components.terminal.pythonshell import PythonShell
 from src.editor_components.menubar.menu_bar import MenuBar
@@ -62,6 +62,9 @@ class App(Window):
         self.alt_pressed = False
         self.folder = ""
         self.file = ""
+        self.guid_height = 28
+        self.guid_position = 35
+        self.line_number_width = 55
     def themes(self):
         # my theme
         self.background = "#1E1E3F"
@@ -145,7 +148,7 @@ class App(Window):
         self.tab.config_colors(tab_bg=self.tab_bg,tab_bar_color=self.tab_bg,tab_fg=self.foreground,selected_tab_color=self.background,frame_color=self.background,line_color="#0078D4")
         self.editor = Editor(self.tab)
         self.editor.editor.configure(font=(self.font,self.font_size),bg=self.background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground,undo=True)
-        self.editor.line.configure(bg=self.background,border=0)
+        self.editor.line.configure(bg=self.background,border=0,width=self.line_number_width)
         self.my_style.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
@@ -161,7 +164,7 @@ class App(Window):
         self.editor.auto_complete.syntax1.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         self.editor.auto_complete.syntax2.configures(method=self.methods,number=self.number,operator=self.operator,circle_brackets=self.circle_bracket,square_brackets=self.square_bracket,curlly_brackets=self.curlly_bracket,variable_in_parameter=self.parameter,variables=self.foreground,decorator=self.decorator,self_color=self.self_color,keyword=self.keyword,constant=self.methods,builtin=self.builtin,string=self.string,comment=self.comment,class_definition=self.definition,definition=self.methods)
         
-
+        self.editor.change_indentation_guide_height_position(self.guid_height,self.guid_position)
         self.tab.add_tab(frame=self.editor,text="Untitled")
 
         
@@ -318,9 +321,9 @@ class App(Window):
         self.editor.auto_complete.change_y(self.pop_up_coordinates)
         self.editor.line.configure(width=self.line_number_width)
         self.editor.line.changefont((self.font,self.font_size))
-        height = self.editor.indentation_guide_height + 4
-        position = self.editor.indentation_guide_position + 4
-        self.editor.change_indentation_guide_height_position(height=height,position=position)
+        self.guid_height = self.editor.indentation_guide_height + 4
+        self.guid_position = self.editor.indentation_guide_position + 4
+        self.editor.change_indentation_guide_height_position(height=self.guid_height,position=self.guid_position)
     
     def zoom_out(self):
         current_size = self.editor.editor.cget("font").split()[1]
@@ -508,13 +511,14 @@ class App(Window):
         self.tab.add_tab(frame=self.editor, text=name, image=image, file_path=file)
         self.editor.setCurrentLinecolor(self.currentline)
         self.editor.editor.configure(font=(self.font,self.font_size),bg=self.background,fg=self.foreground,border=0,selectbackground=self.selection,insertbackground=self.foreground,undo=True)
-        self.editor.line.configure(bg=self.background,border=0)
+        self.editor.line.configure(bg=self.background,border=0,width=self.line_number_width)
         self.editor.line.changefg(self.foreground)
         self.editor.line.changefont((self.font,self.font_size))
         self.my_style.scrollbar_configure(scrollbar=self.currentline,scroll_bg=self.background,active_scrollbar=self.selection)
         self.editor.auto_complete.pop_up.configure(bg=self.app_background,fg=self.foreground,selectbackground=self.selection,selectforeground=self.foreground,font=("Consolas",14))
         self.editor.minimap.configure(bg=self.background,fg=self.foreground)
         self.editor.change_indent_color(self.selection)
+        self.editor.change_indentation_guide_height_position(self.guid_height,self.guid_position)
         self.file = file
 
         self.editor.editor.bind("<Control-=>",lambda event=None:self.zoom_in())
