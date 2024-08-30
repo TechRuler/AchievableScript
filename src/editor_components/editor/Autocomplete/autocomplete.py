@@ -85,6 +85,9 @@ class Autocomplete(tk.Frame):
         if not data:
             self.hide_autocomplete()
             return
+        elif word == data[0]:
+            self.hide_autocomplete()
+            return
 
         new_suggestion = len(data)
         # print(data)
