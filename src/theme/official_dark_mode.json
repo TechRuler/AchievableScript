@@ -1,0 +1,114 @@
+{
+    "Editor": {
+        "font": ["Consolas", 14],
+        "background-color": "#1E1E3F",
+        "foreground-color": "#D6D6E3",
+        "caret-color": "#D6D6E3",
+        "selection-color": "#37375E",
+        "line-highlight-color": "#2B2B4A",
+        "indentation-guide": "spring green",
+        "indentation-single-height": 28,
+        "indentation-guide-position":35,
+
+        "COMMENT": {"foreground": "#7F7FA8", "font": ["Consolas", 14, "italic"]},
+        "KEYWORD": {"foreground": "#f97583", "font": ["Consolas", 14, "bold"]},
+        "STRING": {"foreground": "#C3E88D", "font": ["Consolas", 14]},
+        "DEFINITION": {"foreground": "#82AAFF", "font": ["Consolas", 14]},
+        "BUILTIN": {"foreground": "#82AAFF", "font": ["Consolas", 14, "italic"]},
+        "CONSTANT": {"foreground": "#D19A66", "font": ["Consolas", 14]},
+        "VARIABLE": {"foreground": "#E5C07B", "font": ["Consolas", 14]},
+        "NUMBER": {"foreground": "#FEB974", "font": ["Consolas", 14]},
+        "ERROR": {"foreground": "#FF5555", "background": "#3B2024", "font": ["Consolas", 14, "bold"]},
+        
+        "METHOD": {"foreground": "#82AAFF", "font": ["Consolas", 14, "bold"]},
+        "PARAMETER": {"foreground": "#FEB974", "font": ["Consolas", 14, "italic"]},
+        "SELF": {"foreground": "#f97583", "font": ["Consolas", 14, "italic"]},  
+        "CIRCLE_BRACKET": {"foreground": "#82AAFF", "font": ["Consolas", 14]}, 
+        "SQUARE_BRACKET": {"foreground": "#6BE6FD", "font": ["Consolas", 14]},  
+        "CURLY_BRACKET": {"foreground": "#82AAFF", "font": ["Consolas", 14]},  
+        "OPERATOR": {"foreground": "#FFB86C", "font": ["Consolas", 14, "bold"]},  
+        "DECORATOR": {"foreground": "#FFB86C", "font": ["Consolas", 14, "bold", "italic"]},
+
+        "AutoComplete": {
+            "background-color": "#2C313C",
+            "foreground-color": "#FFFFFF",
+            "selected-background-color": "#3E4451",
+            "selected-foreground-color": "#FFFFFF",
+            "border-color": "#3E4451",
+            "font": ["Consolas", 14]
+        },
+
+        "CallTip": {
+            "background-color": "#2C313C",
+            "foreground-color": "#FFFFFF",
+            "parameter-color": "#D19A66",
+            "border-color": "#3E4451",
+            "font": ["Consolas", 10]
+        }
+        
+        
+    },
+    "line-Number": {
+        "font":["Consolas", 14],
+        "foreground-color": "#FFFFFF",
+        "background-color": "#2C313C",
+        "width":55
+    },
+    "Control-Bar":{
+        "font":["Consolas", 15],
+        "background-color":"#2C313C",
+        "foreground-color":"#FFFFFF",
+        "hover-color":"lightblue",
+        "relief":"groove",
+        "border-width":0
+    },
+
+    "App": {
+        "background-color": "#21452B",
+        "foreground-color": "#ABB2BF"
+    },
+
+    "Tab": {
+        "font": ["Consolas", 14],
+        "tab-bar-color": "#2C313C",
+        "tab-selected-color": "#3E4451",
+        "tab-unselected-color": "#5C6370",
+        "tab-foreground": "#FFFFFF",
+        "status-bar-color": "#282C34",
+        "border-color": "#3E4451",
+        "tab-line": "#3E4451",
+        "padx": [20, 5],
+        "pady": [5, 5]
+    },
+
+    "Terminal": {
+        "font": ["Consolas", 14],
+        "background-color": "#1E2147",
+        "foreground-color": "#ABB2BF",
+        "cursor-color": "#528BFF",
+        "selection-color": "#3E4451"
+    },
+
+    "Scrollbar": {
+        "track-color": "#2C313C",
+        "thumb-color": "#3E4451",
+        "thumb-hover-color": "#4B5363",
+        "thumb-active-color": "#ABB2BF",
+        "border-color": "#3E4451",
+        "width": 10
+    },
+
+    "FileManager": {
+        "background-color": "#282C34",
+        "foreground-color": "#ABB2BF",
+        "folder-color": "#61AFEF",
+        "file-color": "#E5C07B",
+        "selected-item-color": "#3E4451",
+        "hover-item-color": "#4B5363",
+        "icon-color": "#56B6C2",
+        "font": ["Consolas", 10],
+        "border-color": "#3E4451",
+        "right-arrow": ">",
+        "down-arrow": "v"
+    }
+}
